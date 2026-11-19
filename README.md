@@ -1,6 +1,6 @@
 # CafeLedger
 
-**Multi-Tenant, White-Label Cafe Accounts Web Application**
+**Multi-Tenant andWhite-Label Cafe Accounts Web Application**
 
 Stack: Next.js (App Router) + TypeScript + Tailwind CSS + shadcn/ui + Supabase (PostgreSQL, Auth, Storage, Row-Level Security).
 
