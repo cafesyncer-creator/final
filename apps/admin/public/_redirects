@@ -1,3 +1,8 @@
-/login/*  /login/_placeholder/  200
-/admin/shops/*  /admin/shops/_placeholder/  200
-
+/login               /login/index.html                     200
+/login/              /login/index.html                     200
+/login/:slug         /login/_placeholder/index.html        200
+/login/:slug/        /login/_placeholder/index.html        200
+/admin/shops         /admin/shops/index.html               200
+/admin/shops/        /admin/shops/index.html               200
+/admin/shops/:id     /admin/shops/_placeholder/index.html  200
+/admin/shops/:id/    /admin/shops/_placeholder/index.html  200

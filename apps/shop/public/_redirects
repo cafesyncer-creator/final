@@ -1,2 +1,5 @@
-/login/*  /login/_placeholder/  200
-
+/login               /login/index.html                     200
+/login/              /login/index.html                     200
+/login/:slug         /login/_placeholder/index.html        200
+/login/:slug/        /login/_placeholder/index.html        200
+/login/*             /login/_placeholder/index.html        200

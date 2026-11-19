@@ -45,7 +45,9 @@ export default function BrandSlugLoginClient() {
     }
 
     if (!slugToUse || slugToUse === '_placeholder') {
-      setLoading(false);
+      if (typeof window !== 'undefined') {
+        window.location.replace('/login/');
+      }
       return;
     }
 
