@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,20256,e=>{"use strict";var r=e.i(43476),t=e.i(79654);e.s(["default",0,function({children:e}){return(0,r.jsx)(t.RequireRole,{role:"manager",children:e})}])}]);
