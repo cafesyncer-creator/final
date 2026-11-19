@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase/client';
 import { SharedAppLayout } from '@/components/shared/layout-wrapper';
 import { BrandDetailView } from '@/components/master/brand-detail-view';
 import { DEMO_MASTER_BRANDS, DemoMasterBrand } from '@/lib/demo-master-data';
+import { resolveBrandLogoUrl } from '@/lib/theme/brand-svg';
 import { DEMO_ADMIN_SHOPS } from '@/lib/demo-admin-data';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -94,7 +95,7 @@ export function BrandDetailClient() {
         name: dbBrand.name,
         slug: dbBrand.slug,
         registration_no: dbBrand.registration_no,
-        logo_url: bs?.logo_url ?? dbBrand.logo_url,
+        logo_url: resolveBrandLogoUrl(bs?.logo_url ?? dbBrand.logo_url, dbBrand.name, dbBrand.primary_color, dbBrand.secondary_color),
         primary_color: bs?.primary_color || dbBrand.primary_color || '#ea580c',
         secondary_color: bs?.secondary_color || dbBrand.secondary_color || '#9a3412',
         address: dbBrand.address || '',

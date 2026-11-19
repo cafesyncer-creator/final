@@ -18,6 +18,7 @@ import { Count, Money } from '@/components/shared/format-values';
 import { formatCount } from '@/lib/calculations/format';
 import { Button } from '@/components/ui/button';
 import { DemoMasterBrand, DemoGlobalAuditLog } from '@/lib/demo-master-data';
+import { resolveBrandLogoUrl, generateBrandSvgDataUri } from '@/lib/theme/brand-svg';
 
 interface MasterDashboardViewProps {
   brands: DemoMasterBrand[];
@@ -165,8 +166,11 @@ export function MasterDashboardView({
                       <div className="flex items-center gap-3">
                         {b.logo_url ? (
                           <img
-                            src={b.logo_url}
+                            src={resolveBrandLogoUrl(b.logo_url, b.name, b.primary_color, b.secondary_color)}
                             alt={b.name}
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src = generateBrandSvgDataUri(b.name, b.primary_color, b.secondary_color);
+                            }}
                             className="h-8 w-8 rounded-lg object-contain border border-slate-200 bg-white p-0.5 shrink-0"
                           />
                         ) : (

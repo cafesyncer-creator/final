@@ -4,54 +4,55 @@
 4:"static/chunks/281-390af9e9a9c8ec5d.js"
 5:"static/chunks/538-c646658d5e15afd7.js"
 6:"static/chunks/139-d6bcb18577071cad.js"
-7:"static/chunks/374-aba1cd0f2b598518.js"
-8:"static/chunks/app/layout-a74882f9e731ff43.js"
-9:"ReactQueryProvider"
-a:I[31854,["385","$2","342","$3","281","$4","538","$5","139","$6","374","$7","177","$8"],"$9"]
-b:I[7374,["385","$2","342","$3","281","$4","538","$5","139","$6","374","$7","177","$8"],"AuthProvider"]
-c:"ClientThemeProvider"
-d:I[73647,["385","$2","342","$3","281","$4","538","$5","139","$6","374","$7","177","$8"],"$c"]
-e:I[99630,[],""]
-f:I[1380,[],""]
-10:I[77685,["385","$2","342","$3","281","$4","538","$5","139","$6","374","$7","177","$8"],"Toaster"]
-12:"LoadingBoundaryProvider"
-13:I[99630,[],"$12"]
-1e:"ViewportBoundary"
-1f:I[30887,[],"$1e"]
-21:"MetadataBoundary"
-22:I[30887,[],"$21"]
-23:"$Sreact.suspense"
-25:I[15718,[],"default",1]
+7:"static/chunks/210-22d7bf208ae1cc82.js"
+8:"static/chunks/374-8f88e4fcd9914bb1.js"
+9:"static/chunks/app/layout-61532bc8308b97f2.js"
+a:"ReactQueryProvider"
+b:I[31854,["385","$2","342","$3","281","$4","538","$5","139","$6","210","$7","374","$8","177","$9"],"$a"]
+c:I[7374,["385","$2","342","$3","281","$4","538","$5","139","$6","210","$7","374","$8","177","$9"],"AuthProvider"]
+d:"ClientThemeProvider"
+e:I[73647,["385","$2","342","$3","281","$4","538","$5","139","$6","210","$7","374","$8","177","$9"],"$d"]
+f:I[99630,[],""]
+10:I[1380,[],""]
+11:I[77685,["385","$2","342","$3","281","$4","538","$5","139","$6","210","$7","374","$8","177","$9"],"Toaster"]
+13:"LoadingBoundaryProvider"
+14:I[99630,[],"$13"]
+1f:"ViewportBoundary"
+20:I[30887,[],"$1f"]
+22:"MetadataBoundary"
+23:I[30887,[],"$22"]
+24:"$Sreact.suspense"
+26:I[15718,[],"default",1]
 :HL["/_next/static/css/e04cb627c62810f0.css","style"]
 :HL["/_next/static/css/ffe00065d79614fe.css","style"]
-1b:X
-1c:[["children",{"s":"__PAGE__","h":512,"d":{"r":"$L1d","p":false,"v":null}}]]
-19:[["children",{"s":"reports","h":512,"d":{"r":"$L1a","p":false,"v":"$1b"},"c":"$Q1c"}]]
-11:[["children",{"s":"shop","h":516,"d":{"r":["$","$L13",null,{"loading":[["$","div","l",{"className":"p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-5 animate-pulse","children":[["$","div",null,{"className":"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-200","children":[["$","div",null,{"className":"space-y-2","children":[["$","div",null,{"className":"h-7 w-60 rounded-md bg-slate-200"}],["$","div",null,{"className":"h-4 w-72 max-w-full rounded bg-slate-100"}]]}],["$","div",null,{"className":"h-10 w-44 rounded-lg bg-slate-200"}]]}],["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4","children":[["$","div","0",{"className":"rounded-lg border p-4 space-y-2.5","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-3.5 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-7 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-3 w-28 rounded bg-slate-100"}]]}],["$","div","1",{"className":"rounded-lg border p-4 space-y-2.5","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-3.5 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-7 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-3 w-28 rounded bg-slate-100"}]]}],"$L14","$L15"]}],"$L16","$L17"]}],[],null],"children":"$L18"}],"p":false,"v":null},"c":"$Q19"}]]
-0:{"P":null,"c":["","shop","reports",""],"q":"","i":false,"t":{"t":{"s":"","h":536,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e04cb627c62810f0.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/ffe00065d79614fe.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","className":"h-full __variable_176161 __variable_cf84ab __variable_60c334 __variable_b021ee __variable_7d722a __variable_d9d98a","suppressHydrationWarning":true,"children":[["$","head",null,{"children":["$","script",null,{"dangerouslySetInnerHTML":{"__html":"\n(function() {\n  try {\n    var slug = localStorage.getItem('cafesync_current_brand_slug') || 'snaxia';\n    var cached = localStorage.getItem('cafesync_theme_' + slug);\n    if (cached) {\n      var data = JSON.parse(cached);\n      if (data.mode === 'dark') {\n        document.documentElement.classList.add('dark');\n      } else if (data.mode === 'light') {\n        document.documentElement.classList.remove('dark');\n      }\n      if (data.cssVars) {\n        var root = document.documentElement;\n        for (var key in data.cssVars) {\n          root.style.setProperty(key, data.cssVars[key]);\n        }\n      }\n    }\n  } catch(e) {}\n})();\n"}}]}],["$","body",null,{"className":"min-h-full flex flex-col font-sans","children":["$","$La",null,{"children":["$","$Lb",null,{"children":["$","$Ld",null,{"children":[["$","$Le",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lf",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}],["$","$L10",null,{"position":"top-right","richColors":true}]]}]}]}]}]]}]]}],"p":false,"v":null},"c":"$Q11"},"h":{"r":["$","$1","h",{"children":[null,["$","$L1f",null,{"children":"$L20"}],["$","$L22",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$23",null,{"name":"Next.Metadata","children":"$L24"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$25",[]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"yKlOI1GQdX-PxAwTlxtX5"}
-26:"ClientSegmentRoot"
-27:I[589,[],"$26"]
-28:"static/chunks/app/shop/layout-f62bb42c27e23278.js"
-29:I[89709,["385","$2","342","$3","281","$4","374","$7","560","$28"],"default"]
-2b:I[80671,[],"ClientPageRoot"]
-2c:"static/chunks/827-45676c5fed2e07bd.js"
-2d:"static/chunks/563-2bba062420f070cc.js"
-2e:"static/chunks/791-332916ee4c6b8397.js"
-2f:"static/chunks/app/shop/reports/page-37248363d70cc164.js"
-30:I[42165,["385","$2","342","$3","281","$4","827","$2c","563","$2d","374","$7","791","$2e","527","$2f"],"default"]
-33:I[30887,[],"OutletBoundary"]
-14:["$","div","2",{"className":"rounded-lg border p-4 space-y-2.5","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-3.5 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-7 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-3 w-28 rounded bg-slate-100"}]]}]
-15:["$","div","3",{"className":"rounded-lg border p-4 space-y-2.5","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-3.5 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-7 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-3 w-28 rounded bg-slate-100"}]]}]
-16:["$","div",null,{"className":"rounded-lg border p-4 space-y-3","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-5 w-40 rounded bg-slate-200"}],["$","div",null,{"className":"grid grid-cols-1 sm:grid-cols-4 gap-3","children":[["$","div",null,{"className":"h-10 rounded bg-slate-100"}],["$","div",null,{"className":"h-10 rounded bg-slate-100"}],["$","div",null,{"className":"h-10 rounded bg-slate-100"}],["$","div",null,{"className":"h-10 rounded bg-slate-200"}]]}]]}]
-17:["$","div",null,{"className":"rounded-lg border overflow-hidden","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"p-4 border-b border-slate-100 flex items-center justify-between","children":[["$","div",null,{"className":"h-5 w-44 rounded bg-slate-200"}],["$","div",null,{"className":"h-4 w-20 rounded bg-slate-100"}]]}],["$","div",null,{"className":"p-4 space-y-3","children":[["$","div","0",{"className":"h-11 w-full rounded bg-slate-100"}],["$","div","1",{"className":"h-11 w-full rounded bg-slate-100"}],["$","div","2",{"className":"h-11 w-full rounded bg-slate-100"}],["$","div","3",{"className":"h-11 w-full rounded bg-slate-100"}]]}]]}]
-18:["$","$1","c",{"children":[null,["$","$L27",null,{"Component":"$29","slots":{"children":["$","$Le",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lf",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]},"serverProvidedParams":{"params":{},"promises":["$@2a"]}}]]}]
-1a:["$","$1","c",{"children":[null,["$","$Le",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lf",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}]
-1d:["$","$1","c",{"children":[["$","$L2b",null,{"Component":"$30","serverProvidedParams":{"searchParams":{},"params":"$18:props:children:1:props:serverProvidedParams:params","promises":["$@31","$@32"]}}],null,["$","$L33",null,{"children":["$","$23",null,{"name":"Next.MetadataOutlet","children":"$@34"}]}]]}]
-1b:C
-2a:"$18:props:children:1:props:serverProvidedParams:params"
-31:{}
-32:"$18:props:children:1:props:serverProvidedParams:params"
-20:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
-35:I[60214,[],"IconMark"]
-24:[["$","title","0",{"children":"CafeLedger | Shop Portal"}],["$","meta","1",{"name":"description","content":"Enterprise Cafe Accounting & Multi-Outlet Management Platform"}],["$","link","2",{"rel":"icon","href":"/favicon.ico?7161ee1d105bc9c7","type":"image/x-icon","sizes":"48x48"}],["$","$L35","3",{}]]
-34:null
+1c:X
+1d:[["children",{"s":"__PAGE__","h":512,"d":{"r":"$L1e","p":false,"v":null}}]]
+1a:[["children",{"s":"reports","h":512,"d":{"r":"$L1b","p":false,"v":"$1c"},"c":"$Q1d"}]]
+12:[["children",{"s":"shop","h":516,"d":{"r":["$","$L14",null,{"loading":[["$","div","l",{"className":"p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-5 animate-pulse","children":[["$","div",null,{"className":"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-200","children":[["$","div",null,{"className":"space-y-2","children":[["$","div",null,{"className":"h-7 w-60 rounded-md bg-slate-200"}],["$","div",null,{"className":"h-4 w-72 max-w-full rounded bg-slate-100"}]]}],["$","div",null,{"className":"h-10 w-44 rounded-lg bg-slate-200"}]]}],["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4","children":[["$","div","0",{"className":"rounded-lg border p-4 space-y-2.5","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-3.5 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-7 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-3 w-28 rounded bg-slate-100"}]]}],["$","div","1",{"className":"rounded-lg border p-4 space-y-2.5","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-3.5 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-7 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-3 w-28 rounded bg-slate-100"}]]}],"$L15","$L16"]}],"$L17","$L18"]}],[],null],"children":"$L19"}],"p":false,"v":null},"c":"$Q1a"}]]
+0:{"P":null,"c":["","shop","reports",""],"q":"","i":false,"t":{"t":{"s":"","h":536,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e04cb627c62810f0.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/ffe00065d79614fe.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","className":"h-full __variable_176161 __variable_cf84ab __variable_60c334 __variable_b021ee __variable_7d722a __variable_d9d98a","suppressHydrationWarning":true,"children":[["$","head",null,{"children":["$","script",null,{"dangerouslySetInnerHTML":{"__html":"\n(function() {\n  try {\n    var slug = localStorage.getItem('cafesync_current_brand_slug') || 'snaxia';\n    var cached = localStorage.getItem('cafesync_theme_' + slug);\n    if (cached) {\n      var data = JSON.parse(cached);\n      if (data.mode === 'dark') {\n        document.documentElement.classList.add('dark');\n      } else if (data.mode === 'light') {\n        document.documentElement.classList.remove('dark');\n      }\n      if (data.cssVars) {\n        var root = document.documentElement;\n        for (var key in data.cssVars) {\n          root.style.setProperty(key, data.cssVars[key]);\n        }\n      }\n    }\n  } catch(e) {}\n})();\n"}}]}],["$","body",null,{"className":"min-h-full flex flex-col font-sans","children":["$","$Lb",null,{"children":["$","$Lc",null,{"children":["$","$Le",null,{"children":[["$","$Lf",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L10",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}],["$","$L11",null,{"position":"top-right","richColors":true}]]}]}]}]}]]}]]}],"p":false,"v":null},"c":"$Q12"},"h":{"r":["$","$1","h",{"children":[null,["$","$L20",null,{"children":"$L21"}],["$","$L23",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$24",null,{"name":"Next.Metadata","children":"$L25"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$26",[]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"FKQieFfzDYKXDnzePCgbl"}
+27:"ClientSegmentRoot"
+28:I[589,[],"$27"]
+29:"static/chunks/app/shop/layout-1fa76bc232d7e7bc.js"
+2a:I[89709,["385","$2","342","$3","281","$4","210","$7","374","$8","560","$29"],"default"]
+2c:I[80671,[],"ClientPageRoot"]
+2d:"static/chunks/827-45676c5fed2e07bd.js"
+2e:"static/chunks/563-2bba062420f070cc.js"
+2f:"static/chunks/791-3bf1d883fc1ce86a.js"
+30:"static/chunks/app/shop/reports/page-035acfef5249d9e3.js"
+31:I[42165,["385","$2","342","$3","281","$4","827","$2d","563","$2e","210","$7","374","$8","791","$2f","527","$30"],"default"]
+34:I[30887,[],"OutletBoundary"]
+15:["$","div","2",{"className":"rounded-lg border p-4 space-y-2.5","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-3.5 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-7 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-3 w-28 rounded bg-slate-100"}]]}]
+16:["$","div","3",{"className":"rounded-lg border p-4 space-y-2.5","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-3.5 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-7 w-24 rounded bg-slate-200"}],["$","div",null,{"className":"h-3 w-28 rounded bg-slate-100"}]]}]
+17:["$","div",null,{"className":"rounded-lg border p-4 space-y-3","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"h-5 w-40 rounded bg-slate-200"}],["$","div",null,{"className":"grid grid-cols-1 sm:grid-cols-4 gap-3","children":[["$","div",null,{"className":"h-10 rounded bg-slate-100"}],["$","div",null,{"className":"h-10 rounded bg-slate-100"}],["$","div",null,{"className":"h-10 rounded bg-slate-100"}],["$","div",null,{"className":"h-10 rounded bg-slate-200"}]]}]]}]
+18:["$","div",null,{"className":"rounded-lg border overflow-hidden","style":{"backgroundColor":"var(--surface-card, #ffffff)","borderColor":"var(--surface-border, #e2e8f0)"},"children":[["$","div",null,{"className":"p-4 border-b border-slate-100 flex items-center justify-between","children":[["$","div",null,{"className":"h-5 w-44 rounded bg-slate-200"}],["$","div",null,{"className":"h-4 w-20 rounded bg-slate-100"}]]}],["$","div",null,{"className":"p-4 space-y-3","children":[["$","div","0",{"className":"h-11 w-full rounded bg-slate-100"}],["$","div","1",{"className":"h-11 w-full rounded bg-slate-100"}],["$","div","2",{"className":"h-11 w-full rounded bg-slate-100"}],["$","div","3",{"className":"h-11 w-full rounded bg-slate-100"}]]}]]}]
+19:["$","$1","c",{"children":[null,["$","$L28",null,{"Component":"$2a","slots":{"children":["$","$Lf",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L10",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]},"serverProvidedParams":{"params":{},"promises":["$@2b"]}}]]}]
+1b:["$","$1","c",{"children":[null,["$","$Lf",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L10",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}]
+1e:["$","$1","c",{"children":[["$","$L2c",null,{"Component":"$31","serverProvidedParams":{"searchParams":{},"params":"$19:props:children:1:props:serverProvidedParams:params","promises":["$@32","$@33"]}}],null,["$","$L34",null,{"children":["$","$24",null,{"name":"Next.MetadataOutlet","children":"$@35"}]}]]}]
+1c:C
+2b:"$19:props:children:1:props:serverProvidedParams:params"
+32:{}
+33:"$19:props:children:1:props:serverProvidedParams:params"
+21:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+36:I[60214,[],"IconMark"]
+25:[["$","title","0",{"children":"CafeLedger | Shop Portal"}],["$","meta","1",{"name":"description","content":"Enterprise Cafe Accounting & Multi-Outlet Management Platform"}],["$","link","2",{"rel":"icon","href":"/favicon.ico?7161ee1d105bc9c7","type":"image/x-icon","sizes":"48x48"}],["$","$L36","3",{}]]
+35:null

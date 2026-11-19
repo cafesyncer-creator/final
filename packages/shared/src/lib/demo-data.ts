@@ -1,4 +1,5 @@
 import { UserRole } from './supabase/types';
+import { generateBrandSvgDataUri } from './theme/brand-svg';
 
 export interface DemoUser {
   id: string;
@@ -28,7 +29,7 @@ export const DEMO_BRAND = {
   name: 'Snaxia Artisanal Cafes',
   slug: 'snaxia',
   registration_no: 'REG-SNAXIA-2024',
-  logo_url: '/api/brand-icon/11111111-1111-1111-1111-111111111111?variant=logo',
+  logo_url: generateBrandSvgDataUri('Snaxia Artisanal Cafes', '#ea580c', '#9a3412', 'logo'),
   primary_color: '#ea580c',
   secondary_color: '#9a3412',
   gstin: '29AAAAA1234A1Z5',
@@ -39,7 +40,7 @@ export const DEMO_BRAND_ROAST = {
   name: 'Roast & Brew Specialty Co.',
   slug: 'roast-and-brew',
   registration_no: 'REG-ROAST-2025',
-  logo_url: '/api/brand-icon/11111111-1111-1111-1111-222222222222?variant=logo',
+  logo_url: generateBrandSvgDataUri('Roast & Brew Specialty Co.', '#0284c7', '#0369a1', 'logo'),
   primary_color: '#0284c7',
   secondary_color: '#0369a1',
   gstin: '27AABCR5678B1Z2',
@@ -50,7 +51,7 @@ export const DEMO_BRAND_CHAI = {
   name: 'Chai Craft Express',
   slug: 'chai-craft',
   registration_no: 'REG-CHAICRAFT-2025',
-  logo_url: '/api/brand-icon/11111111-1111-1111-1111-333333333333?variant=logo',
+  logo_url: generateBrandSvgDataUri('Chai Craft Express', '#16a34a', '#15803d', 'logo'),
   primary_color: '#16a34a',
   secondary_color: '#15803d',
   gstin: '07AAACC9988C1Z4',

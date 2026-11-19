@@ -5,6 +5,7 @@ import path from 'path';
 import zlib from 'zlib';
 import { DEMO_MASTER_BRANDS } from '@/lib/demo-master-data';
 import { hexToRgb, normalizeHex, pickReadableTextColor } from './colors';
+import { generateBrandSvgDataUri } from './brand-svg';
 import { buildDefaultBrandSettings, slugifyBrandName } from './presets';
 import type { BrandSettings, BrandThemeBundle } from './types';
 
@@ -53,7 +54,7 @@ function createInitialBundles(): Record<string, BrandThemeBundle> {
       base.login_layout = 'split';
       base.login_logo_size = 'md';
       base.login_bg_color = '#fff7ed';
-      base.icon_url = '/api/brand-icon/11111111-1111-1111-1111-111111111111';
+      base.icon_url = generateBrandSvgDataUri('Snaxia Artisanal Cafes', '#ea580c', '#9a3412', 'icon');
       base.pdf_header_style = 'left';
       base.pdf_footer_text = 'Snaxia Hospitality Pvt. Ltd. • Internal Daily Ledger';
     } else if (b.id === '11111111-1111-1111-1111-222222222222') {
@@ -71,7 +72,7 @@ function createInitialBundles(): Record<string, BrandThemeBundle> {
       base.login_layout = 'centered';
       base.login_logo_size = 'lg';
       base.login_bg_color = '#eff6ff';
-      base.icon_url = '/api/brand-icon/11111111-1111-1111-1111-222222222222';
+      base.icon_url = generateBrandSvgDataUri('Roast & Brew Specialty Co.', '#0284c7', '#0369a1', 'icon');
       base.pdf_header_style = 'centered';
       base.pdf_footer_text = 'Roast & Brew Specialty Co. • Audited Financial Statement';
       base.pdf_signature_line = true;
@@ -90,7 +91,7 @@ function createInitialBundles(): Record<string, BrandThemeBundle> {
       base.login_layout = 'split';
       base.login_logo_size = 'md';
       base.login_bg_color = '#f0fdf4';
-      base.icon_url = '/api/brand-icon/11111111-1111-1111-1111-333333333333';
+      base.icon_url = generateBrandSvgDataUri('Chai Craft Express', '#16a34a', '#15803d', 'icon');
       base.pdf_header_style = 'left';
       base.pdf_footer_text = 'Chai Craft Express Franchise Operations';
     }

@@ -28,6 +28,7 @@ import {
   Copy,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { resolveBrandLogoUrl, generateBrandSvgDataUri } from '@/lib/theme/brand-svg';
 import {
   Dialog,
   DialogContent,
@@ -261,8 +262,11 @@ export function BrandDetailView({
           <div className="flex items-center gap-3">
             {currentBrand.logo_url ? (
               <img
-                src={currentBrand.logo_url}
+                src={resolveBrandLogoUrl(currentBrand.logo_url, currentBrand.name, currentBrand.primary_color, currentBrand.secondary_color)}
                 alt={currentBrand.name}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = generateBrandSvgDataUri(currentBrand.name, currentBrand.primary_color, currentBrand.secondary_color);
+                }}
                 className="h-14 w-14 rounded-xl object-contain border border-slate-200 bg-white p-1 shadow-xs"
               />
             ) : (

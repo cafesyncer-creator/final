@@ -1,4 +1,4 @@
-import { DEMO_BRAND } from './demo-data';
+import { DEMO_BRAND, DEMO_BRAND_ROAST, DEMO_BRAND_CHAI } from './demo-data';
 
 export interface DemoMasterBrand {
   id: string;
@@ -26,7 +26,7 @@ export const DEMO_MASTER_BRANDS: DemoMasterBrand[] = [
     name: 'Snaxia Artisanal Cafes',
     slug: 'snaxia',
     registration_no: 'REG-SNAXIA-2024',
-    logo_url: '/api/brand-icon/11111111-1111-1111-1111-111111111111?variant=logo',
+    logo_url: DEMO_BRAND.logo_url,
     primary_color: '#ea580c',
     secondary_color: '#9a3412',
     address: 'Indiranagar 100ft Road, Bengaluru, Karnataka 560038',
@@ -53,7 +53,7 @@ export const DEMO_MASTER_BRANDS: DemoMasterBrand[] = [
     name: 'Roast & Brew Specialty Co.',
     slug: 'roast-and-brew',
     registration_no: 'REG-ROAST-2025',
-    logo_url: '/api/brand-icon/11111111-1111-1111-1111-222222222222?variant=logo',
+    logo_url: DEMO_BRAND_ROAST.logo_url,
     primary_color: '#0284c7', // cool sky blue
     secondary_color: '#0369a1',
     address: 'Bandra Kurla Complex, Mumbai, Maharashtra 400051',
@@ -80,7 +80,7 @@ export const DEMO_MASTER_BRANDS: DemoMasterBrand[] = [
     name: 'Chai Craft Express',
     slug: 'chai-craft',
     registration_no: 'REG-CHAICRAFT-2025',
-    logo_url: '/api/brand-icon/11111111-1111-1111-1111-333333333333?variant=logo',
+    logo_url: DEMO_BRAND_CHAI.logo_url,
     primary_color: '#16a34a', // emerald green
     secondary_color: '#15803d',
     address: 'Connaught Place Outer Circle, New Delhi 110001',

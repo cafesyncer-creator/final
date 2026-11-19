@@ -4,31 +4,32 @@
 4:"static/chunks/670-e21c523f7c752fbe.js"
 5:"static/chunks/538-c646658d5e15afd7.js"
 6:"static/chunks/139-d6bcb18577071cad.js"
-7:"static/chunks/374-5ffd58d144caf120.js"
-8:"static/chunks/app/layout-3f655daa8ccf1df6.js"
-9:"ReactQueryProvider"
-a:I[31854,["385","$2","342","$3","670","$4","538","$5","139","$6","374","$7","177","$8"],"$9"]
-b:I[7374,["385","$2","342","$3","670","$4","538","$5","139","$6","374","$7","177","$8"],"AuthProvider"]
-c:I[99630,[],""]
-d:I[1380,[],""]
-e:I[77685,["385","$2","342","$3","670","$4","538","$5","139","$6","374","$7","177","$8"],"Toaster"]
-10:I[80671,[],"ClientPageRoot"]
-11:"static/chunks/app/page-e4fcbb361dfa0dd2.js"
-12:I[59053,["974","$11"],"default"]
-15:I[30887,[],"OutletBoundary"]
-16:"$Sreact.suspense"
-18:"ViewportBoundary"
-19:I[30887,[],"$18"]
-1b:"MetadataBoundary"
-1c:I[30887,[],"$1b"]
-1e:I[15718,[],"default",1]
+7:"static/chunks/67-c51f031586228f90.js"
+8:"static/chunks/374-5ae6c8b08e6407a8.js"
+9:"static/chunks/app/layout-ce612bb89e226b79.js"
+a:"ReactQueryProvider"
+b:I[31854,["385","$2","342","$3","670","$4","538","$5","139","$6","67","$7","374","$8","177","$9"],"$a"]
+c:I[7374,["385","$2","342","$3","670","$4","538","$5","139","$6","67","$7","374","$8","177","$9"],"AuthProvider"]
+d:I[99630,[],""]
+e:I[1380,[],""]
+f:I[77685,["385","$2","342","$3","670","$4","538","$5","139","$6","67","$7","374","$8","177","$9"],"Toaster"]
+11:I[80671,[],"ClientPageRoot"]
+12:"static/chunks/app/page-e4fcbb361dfa0dd2.js"
+13:I[59053,["974","$12"],"default"]
+16:I[30887,[],"OutletBoundary"]
+17:"$Sreact.suspense"
+19:"ViewportBoundary"
+1a:I[30887,[],"$19"]
+1c:"MetadataBoundary"
+1d:I[30887,[],"$1c"]
+1f:I[15718,[],"default",1]
 :HL["/_next/static/css/e04cb627c62810f0.css","style"]
 :HL["/_next/static/css/5cf0168519415739.css","style"]
-f:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[["$","$L10",null,{"Component":"$12","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@13","$@14"]}}],null,["$","$L15",null,{"children":["$","$16",null,{"name":"Next.MetadataOutlet","children":"$@17"}]}]]}],"p":false,"v":null}}]]
-0:{"P":null,"c":["",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e04cb627c62810f0.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/5cf0168519415739.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","className":"h-full dark __variable_8a9dd9 __variable_cf84ab __variable_60c334 __variable_b021ee __variable_7d722a __variable_d9d98a","style":{"colorScheme":"dark","backgroundColor":"#28150E"},"children":["$","body",null,{"className":"min-h-full flex flex-col font-sans bg-[#28150E] text-[#F7E5BC] antialiased","children":[["$","$La",null,{"children":["$","$Lb",null,{"children":["$","$Lc",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Ld",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}],["$","$Le",null,{"position":"top-right","richColors":true}]]}]}]]}],"p":false,"v":null},"c":"$Qf"},"h":{"r":["$","$1","h",{"children":[null,["$","$L19",null,{"children":"$L1a"}],["$","$L1c",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$16",null,{"name":"Next.Metadata","children":"$L1d"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$1e",[]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"wwtKDl-m4VQYaQG8ly3TU"}
-13:{}
-14:"$f:0:1:d:r:props:children:0:props:serverProvidedParams:params"
-1a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#28150E"}]]
-1f:I[60214,[],"IconMark"]
-17:null
-1d:[["$","title","0",{"children":"CafeSync Master"}],["$","meta","1",{"name":"description","content":"CafeSync Master Administration Platform"}],["$","link","2",{"rel":"manifest","href":"/manifest.webmanifest","crossOrigin":"$undefined"}],["$","link","3",{"rel":"shortcut icon","href":"/brand/cafesync-favicon-64.png"}],["$","link","4",{"rel":"icon","href":"/favicon.ico?09c47e6be8a41c85","type":"image/x-icon","sizes":"64x64"}],["$","link","5",{"rel":"icon","href":"/brand/cafesync-favicon-64.png"}],["$","link","6",{"rel":"apple-touch-icon","href":"/brand/cafesync-icon-192.png"}],["$","$L1f","7",{}]]
+10:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[["$","$L11",null,{"Component":"$13","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@14","$@15"]}}],null,["$","$L16",null,{"children":["$","$17",null,{"name":"Next.MetadataOutlet","children":"$@18"}]}]]}],"p":false,"v":null}}]]
+0:{"P":null,"c":["",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e04cb627c62810f0.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/5cf0168519415739.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","className":"h-full dark __variable_8a9dd9 __variable_cf84ab __variable_60c334 __variable_b021ee __variable_7d722a __variable_d9d98a","style":{"colorScheme":"dark","backgroundColor":"#28150E"},"children":["$","body",null,{"className":"min-h-full flex flex-col font-sans bg-[#28150E] text-[#F7E5BC] antialiased","children":[["$","$Lb",null,{"children":["$","$Lc",null,{"children":["$","$Ld",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Le",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}],["$","$Lf",null,{"position":"top-right","richColors":true}]]}]}]]}],"p":false,"v":null},"c":"$Q10"},"h":{"r":["$","$1","h",{"children":[null,["$","$L1a",null,{"children":"$L1b"}],["$","$L1d",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$17",null,{"name":"Next.Metadata","children":"$L1e"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$1f",[]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"k0u4ec1Yx15aZ_gkaWKjQ"}
+14:{}
+15:"$10:0:1:d:r:props:children:0:props:serverProvidedParams:params"
+1b:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#28150E"}]]
+20:I[60214,[],"IconMark"]
+18:null
+1e:[["$","title","0",{"children":"CafeSync Master"}],["$","meta","1",{"name":"description","content":"CafeSync Master Administration Platform"}],["$","link","2",{"rel":"manifest","href":"/manifest.webmanifest","crossOrigin":"$undefined"}],["$","link","3",{"rel":"shortcut icon","href":"/brand/cafesync-favicon-64.png"}],["$","link","4",{"rel":"icon","href":"/favicon.ico?09c47e6be8a41c85","type":"image/x-icon","sizes":"64x64"}],["$","link","5",{"rel":"icon","href":"/brand/cafesync-favicon-64.png"}],["$","link","6",{"rel":"apple-touch-icon","href":"/brand/cafesync-icon-192.png"}],["$","$L20","7",{}]]

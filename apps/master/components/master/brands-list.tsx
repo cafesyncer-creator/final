@@ -23,6 +23,7 @@ import { DemoMasterBrand } from '@/lib/demo-master-data';
 import { CreateBrandModal } from './create-brand-modal';
 import { toggleBrandStatusAction } from '@/app/master/actions';
 import { slugifyBrandName } from '@/lib/theme/presets';
+import { resolveBrandLogoUrl, generateBrandSvgDataUri } from '@/lib/theme/brand-svg';
 
 interface BrandsListProps {
   initialBrands: DemoMasterBrand[];
@@ -150,8 +151,11 @@ export function BrandsList({ initialBrands }: BrandsListProps) {
                 <div className="flex items-center gap-3">
                   {brand.logo_url ? (
                     <img
-                      src={brand.logo_url}
+                      src={resolveBrandLogoUrl(brand.logo_url, brand.name, brand.primary_color, brand.secondary_color)}
                       alt={brand.name}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = generateBrandSvgDataUri(brand.name, brand.primary_color, brand.secondary_color);
+                      }}
                       className="h-11 w-11 rounded-lg object-contain border border-slate-200 bg-white p-0.5 shadow-2xs"
                     />
                   ) : (

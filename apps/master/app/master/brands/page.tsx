@@ -8,6 +8,7 @@ import { SharedAppLayout } from '@/components/shared/layout-wrapper';
 import { BrandsList } from '@/components/master/brands-list';
 import { getCurrentMonthKolkata, getMonthBounds } from '@/lib/calculations/dates';
 import { DEMO_MASTER_BRANDS, DemoMasterBrand } from '@/lib/demo-master-data';
+import { resolveBrandLogoUrl } from '@/lib/theme/brand-svg';
 import { Loader2 } from 'lucide-react';
 
 export default function MasterBrandsPage() {
@@ -70,7 +71,7 @@ export default function MasterBrandsPage() {
           name: b.name,
           slug: b.slug,
           registration_no: b.registration_no,
-          logo_url: bs?.logo_url ?? b.logo_url,
+          logo_url: resolveBrandLogoUrl(bs?.logo_url ?? b.logo_url, b.name, b.primary_color, b.secondary_color),
           primary_color: bs?.primary_color || b.primary_color || '#ea580c',
           secondary_color: bs?.secondary_color || b.secondary_color || '#9a3412',
           address: b.address || '',
