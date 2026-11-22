@@ -7,14 +7,6 @@ const nextConfig: NextConfig = {
   },
   trailingSlash: true,
   transpilePackages: ["@cafesync/shared"],
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
-  },
 };
 
 export default nextConfig;

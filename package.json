@@ -2,9 +2,15 @@
   "name": "cafesync",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@12.21.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo build",
+    "build:master": "npm run build --workspace=master",
+    "build:admin": "npm run build --workspace=admin",
+    "build:shop": "npm run build --workspace=shop",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
@@ -14,8 +20,11 @@
   },
   "devDependencies": {
     "@supabase/supabase-js": "^2.119.0",
+    "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^20",
     "dotenv": "^18.0.10",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^4.0.0",
     "tsx": "^4.23.15",
     "turbo": "^2.11.11",
     "typescript": "^5"
