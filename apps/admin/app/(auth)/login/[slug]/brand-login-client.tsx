@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useActionState, useState, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { loginAction } from '../actions';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { loginWithCredentials } from '@/lib/api/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -81,12 +81,14 @@ function BrandLoginInner({
   primaryFg: string;
 }) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirectParam = searchParams.get('redirect') || '';
   const errorParam = searchParams.get('error');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [state, formAction, isPending] = useActionState(loginAction, null);
+  const [isPending, setIsPending] = useState(false);
+  const [customError, setCustomError] = useState<string | null>(null);
 
   const brandName = brandLogin.display_name || brandLogin.brand_name;
   const isDarkDefault = brandLogin.default_mode === 'dark';
@@ -96,10 +98,36 @@ function BrandLoginInner({
       : brandLogin.logo_url;
 
   const errorMessage =
-    state?.error ||
+    customError ||
     (errorParam === 'inactive_account'
       ? 'Your account has been deactivated. Please contact your brand administrator.'
       : null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsPending(true);
+    setCustomError(null);
+
+    try {
+      const res = await loginWithCredentials(email, password, brandLogin.brand_id);
+      if (!res.success) {
+        setCustomError(res.error || 'Authentication failed. Please check your credentials.');
+        setIsPending(false);
+        return;
+      }
+
+      if (res.mustChangePassword) {
+        router.push('/change-password');
+        return;
+      }
+
+      const dest = redirectParam || '/admin/';
+      window.location.href = dest;
+    } catch (err: any) {
+      setCustomError(err?.message || 'Unexpected login error.');
+      setIsPending(false);
+    }
+  };
 
   const bgStyle: React.CSSProperties = brandLogin.login_bg_url
     ? {
@@ -153,7 +181,7 @@ function BrandLoginInner({
         </div>
       </div>
 
-      <form action={formAction} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         {errorMessage && (
           <div className="flex items-center gap-2 rounded-[var(--radius-btn,0.5rem)] bg-red-50 p-3 text-xs text-red-700 border border-red-200">
             <AlertCircle className="h-4 w-4 shrink-0" />

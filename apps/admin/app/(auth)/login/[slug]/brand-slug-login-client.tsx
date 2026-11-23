@@ -167,6 +167,17 @@ export default function BrandSlugLoginClient() {
   }
 
   if (!brandLogin) {
+    if (effectiveSlug === '_placeholder') {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+          <div className="flex flex-col items-center gap-3 text-slate-500">
+            <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+            <span className="text-sm font-medium">Redirecting to login...</span>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen flex flex-col justify-between items-center p-4 bg-slate-50">
         <div className="w-full flex-1 flex flex-col items-center justify-center max-w-md text-center">

@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useActionState, useState, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { loginAction } from './actions';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { loginWithCredentials } from '@/lib/api/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,23 +16,52 @@ interface LoginFormClientProps {
 
 function LoginFormInner({ isLiveSupabase }: LoginFormClientProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirectParam = searchParams.get('redirect') || '';
   const errorParam = searchParams.get('error');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [state, formAction, isPending] = useActionState(loginAction, null);
+  const [isPending, setIsPending] = useState(false);
+  const [customError, setCustomError] = useState<string | null>(null);
 
   const fillCredentials = (userEmail: string) => {
     setEmail(userEmail);
     setPassword('password123');
+    setCustomError(null);
   };
 
   const errorMessage =
-    state?.error ||
+    customError ||
     (errorParam === 'inactive_account'
       ? 'Your account has been deactivated. Please contact your brand administrator.'
       : null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsPending(true);
+    setCustomError(null);
+
+    try {
+      const res = await loginWithCredentials(email, password);
+      if (!res.success) {
+        setCustomError(res.error || 'Authentication failed. Please check your credentials.');
+        setIsPending(false);
+        return;
+      }
+
+      if (res.mustChangePassword) {
+        router.push('/change-password');
+        return;
+      }
+
+      const destination = redirectParam || '/admin/';
+      window.location.href = destination;
+    } catch (err: any) {
+      setCustomError(err?.message || 'Unexpected login error.');
+      setIsPending(false);
+    }
+  };
 
   return (
     <Card className="w-full max-w-md shadow-xl border-slate-200 bg-white/95 backdrop-blur-xs">
@@ -48,7 +77,7 @@ function LoginFormInner({ isLiveSupabase }: LoginFormClientProps) {
         </CardDescription>
       </CardHeader>
 
-      <form action={formAction}>
+      <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           {errorMessage && (
             <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-xs text-red-700 border border-red-200">
@@ -56,8 +85,6 @@ function LoginFormInner({ isLiveSupabase }: LoginFormClientProps) {
               <span>{errorMessage}</span>
             </div>
           )}
-
-          <input type="hidden" name="redirect" value={redirectParam} />
 
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs font-semibold text-slate-700">
@@ -182,7 +209,7 @@ function LoginFormInner({ isLiveSupabase }: LoginFormClientProps) {
           <div className="rounded-lg bg-slate-50 p-2.5 text-[11px] text-slate-500 border border-slate-100 flex items-start gap-2">
             <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>
-              Role-based middleware routes you directly to `/master`, `/admin`, or `/shop`.
+              Role-based guard routes you directly to `/admin` or `/shop`.
             </span>
           </div>
         </CardContent>
