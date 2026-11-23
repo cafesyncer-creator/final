@@ -25,6 +25,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useBrandTheme } from './brand-provider';
 import { UserRole } from '@/lib/supabase/types';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 
 export interface NavItem {
@@ -40,6 +41,7 @@ interface SidebarProps {
   onCloseMobile: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
+  onSignOut?: () => void;
 }
 
 export function BrandAvatarOrLogo({
@@ -106,10 +108,30 @@ export function SharedSidebar({
   onCloseMobile,
   isCollapsed = false,
   onToggleCollapse,
+  onSignOut,
 }: SidebarProps) {
   const pathname = usePathname();
   const { isThemed, bundle, mode } = useBrandTheme();
   const isMaster = role === 'master';
+
+  const handleSignOutClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onSignOut) {
+      onSignOut();
+      return;
+    }
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('cafesync_demo_user');
+        localStorage.removeItem('supabase.auth.token');
+      }
+    } catch (err) {
+      console.error('Sign out error:', err);
+    }
+    window.location.href = '/login/';
+  };
 
   const masterNavItems: NavItem[] = [
     { title: 'Master Dashboard', href: '/master', icon: Layers },
@@ -252,17 +274,18 @@ export function SharedSidebar({
         </div>
 
         <div className="p-3 border-t border-[#4A2F25] bg-[#35201A]/60 space-y-2">
-          <a
-            href="/api/auth/logout"
+          <button
+            type="button"
+            onClick={handleSignOutClick}
             className={cn(
-              'flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition-colors cursor-pointer',
+              'w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition-colors cursor-pointer text-left',
               isCollapsed && 'justify-center px-2'
             )}
             title="Sign Out"
           >
             <LogOut className="h-4 w-4 shrink-0 text-rose-400" />
             {!isCollapsed && <span>Sign Out</span>}
-          </a>
+          </button>
           {!isCollapsed && (
             <div className="flex items-center justify-between text-[11px] text-[#B9A58A] px-2 py-0.5">
               <span>CafeSync Master</span>
@@ -433,11 +456,12 @@ export function SharedSidebar({
         className="p-3 border-t space-y-2"
         style={{ borderColor: 'var(--sidebar-border, #e2e8f0)' }}
       >
-        <a
-          href="/api/auth/logout"
+        <button
+          type="button"
+          onClick={handleSignOutClick}
           title="Sign Out"
           className={cn(
-            'flex items-center gap-2.5 px-3 py-2 text-xs font-semibold transition-colors cursor-pointer rounded-[var(--radius-btn,0.5rem)] hover:opacity-80',
+            'w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold transition-colors cursor-pointer rounded-[var(--radius-btn,0.5rem)] hover:opacity-80 text-left',
             isCollapsed && 'justify-center px-2'
           )}
           style={{
@@ -449,7 +473,7 @@ export function SharedSidebar({
         >
           <LogOut className="h-4 w-4 shrink-0" />
           {!isCollapsed && <span>Sign Out</span>}
-        </a>
+        </button>
 
         {!isCollapsed && (
           <div

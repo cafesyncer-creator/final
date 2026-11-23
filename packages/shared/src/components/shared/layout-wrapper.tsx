@@ -85,10 +85,14 @@ export function SharedAppLayout({ user, brand, children }: SharedLayoutProps) {
     try {
       const supabase = createClient();
       await supabase.auth.signOut();
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('cafesync_demo_user');
+        localStorage.removeItem('supabase.auth.token');
+      }
     } catch (err) {
       console.error('Sign out failed:', err);
     }
-    window.location.href = '/api/auth/logout';
+    window.location.href = '/login/';
   };
 
   return (
@@ -105,6 +109,7 @@ export function SharedAppLayout({ user, brand, children }: SharedLayoutProps) {
           onCloseMobile={() => setIsMobileMenuOpen(false)}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
+          onSignOut={handleSignOut}
         />
 
         <div

@@ -64,18 +64,20 @@ export async function loginWithCredentials(
   try {
     // 1. Resolve email if user entered a username
     let emailToAuth = identifier;
-    if (identifier === 'master' || identifier === 'master@cafeledger.io') {
-      emailToAuth = 'cafesyncer@gmail.com';
-    } else if (!identifier.includes('@')) {
-      const { data: profileData } = await (supabase as any)
-        .from('profiles')
-        .select('id, role')
-        .eq('username', identifier)
-        .in('role', ['master', 'platform_admin'])
-        .maybeSingle();
+    if (!identifier.includes('@')) {
+      const { data: resolvedEmail } = await (supabase as any).rpc(
+        'get_login_email_for_username',
+        {
+          p_username: identifier,
+          p_brand_id: null,
+        }
+      );
 
-      if (profileData) {
-        // Master synthetic email format
+      if (resolvedEmail) {
+        emailToAuth = resolvedEmail;
+      } else if (identifier === 'master') {
+        emailToAuth = 'cafesync@gmail.com';
+      } else {
         emailToAuth = `${identifier}@master.cafesync.app`;
       }
     }
@@ -86,9 +88,9 @@ export async function loginWithCredentials(
       password,
     });
 
-    if (authError && (identifier === 'master' || identifier === 'master@cafeledger.io')) {
+    if (authError && (identifier === 'master' || identifier === 'cafesync@gmail.com')) {
       const fallback = await supabase.auth.signInWithPassword({
-        email: `${identifier}@master.cafesync.app`,
+        email: 'master@cafeledger.io',
         password,
       });
       if (fallback.data?.user) {
