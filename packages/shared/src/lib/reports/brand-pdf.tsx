@@ -56,6 +56,7 @@ export interface BrandPdfData {
   itemSummaryRows?: ItemSummaryRow[];
   groupedItemDetails?: GroupedItemDetailsGroup[];
   salaryRecords?: ReportSalaryRow[];
+  gst?: import('./types').ReportGstInfo | null;
 }
 
 export function createBrandPdfStyles(primaryColor: string = '#ea580c') {
@@ -354,6 +355,26 @@ export function BrandConsolidatedPdfDocument({ data }: { data: BrandPdfData }) {
           </View>
         )}
 
+        {/* OPTIONAL BRAND CONSOLIDATED GST KPI */}
+        {(reportType === 'daily_summary' || reportType === 'full') && data.gst && data.gst.gstAmount > 0 && (
+          <View style={[styles.kpiGrid, { marginTop: -6, marginBottom: 14 }]}>
+            <View style={[styles.kpiCard, { borderColor: '#fed7aa', backgroundColor: '#fffbeb' }]}>
+              <Text style={[styles.kpiTitle, { color: '#9a3412' }]}>
+                Consolidated GST ({data.gst.type === 'percentage' ? `${data.gst.value}%` : 'Flat Amount'})
+              </Text>
+              <Text style={[styles.kpiValue, { color: '#b45309' }]}>
+                +{formatINR(data.gst.gstAmount, false)}
+              </Text>
+            </View>
+            <View style={[styles.kpiCard, { borderColor: '#86efac', backgroundColor: '#f0fdf4' }]}>
+              <Text style={[styles.kpiTitle, { color: '#166534' }]}>Grand Total (Brand + GST)</Text>
+              <Text style={[styles.kpiValue, { color: '#15803d' }]}>
+                {formatINR(data.gst.grandTotal, false)}
+              </Text>
+            </View>
+          </View>
+        )}
+
         {/* SHOP COMPARISON TABLE */}
         {(reportType === 'daily_summary' || reportType === 'full') && (
           <View>
@@ -397,6 +418,31 @@ export function BrandConsolidatedPdfDocument({ data }: { data: BrandPdfData }) {
                   {formatINR(data.summary.netProfit, false)}
                 </Text>
               </View>
+
+              {data.gst && data.gst.gstAmount > 0 && (
+                <>
+                  <View style={[styles.tableRow, { backgroundColor: '#fffbeb', borderTopWidth: 0.8, borderTopColor: '#fed7aa' }]}>
+                    <Text style={[styles.tableCell, { width: '45%', fontFamily: 'Helvetica-Bold', color: '#9a3412' }]}>
+                      GST ({data.gst.type === 'percentage' ? `${data.gst.value}%` : 'FLAT AMOUNT'})
+                    </Text>
+                    <Text style={[styles.tableCellRight, { width: '18%', fontFamily: 'Helvetica-Bold', color: '#b45309' }]}>
+                      +{formatINR(data.gst.gstAmount, false)}
+                    </Text>
+                    <Text style={[styles.tableCellRight, { width: '37%', color: '#9a3412', fontSize: 7.5 }]}>
+                      Base: {formatINR(data.gst.subtotal, false)}
+                    </Text>
+                  </View>
+                  <View style={[styles.tableRow, { backgroundColor: '#f0fdf4', borderTopWidth: 1, borderTopColor: '#86efac' }]}>
+                    <Text style={[styles.tableCell, { width: '45%', fontFamily: 'Helvetica-Bold', color: '#166534' }]}>
+                      GRAND TOTAL (INCL. GST)
+                    </Text>
+                    <Text style={[styles.tableCellRight, { width: '18%', fontFamily: 'Helvetica-Bold', color: '#166534' }]}>
+                      {formatINR(data.gst.grandTotal, false)}
+                    </Text>
+                    <Text style={[styles.tableCellRight, { width: '37%' }]}>-</Text>
+                  </View>
+                </>
+              )}
             </View>
           </View>
         )}

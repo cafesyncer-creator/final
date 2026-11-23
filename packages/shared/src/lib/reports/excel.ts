@@ -120,6 +120,40 @@ export async function generateExcelReport(data: ReportData): Promise<Buffer> {
       summaryTotalRow.getCell(3).numFmt = currencyFormat;
       summaryTotalRow.getCell(4).numFmt = currencyFormat;
       summaryTotalRow.getCell(5).numFmt = currencyFormat;
+
+      if (data.gst && data.gst.gstAmount > 0) {
+        const gstRow = summarySheet.addRow([
+          `GST (${data.gst.type === 'percentage' ? `${data.gst.value}%` : 'Flat Amount'})`,
+          `Base: ₹${data.gst.subtotal.toFixed(2)}`,
+          data.gst.gstAmount,
+          '',
+          '',
+          '',
+        ]);
+        gstRow.font = { bold: true, color: { argb: 'FFB45309' } };
+        gstRow.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFFBEB' },
+        };
+        gstRow.getCell(3).numFmt = currencyFormat;
+
+        const grandTotalRow = summarySheet.addRow([
+          'GRAND TOTAL (INCL. GST)',
+          '',
+          data.gst.grandTotal,
+          '',
+          '',
+          '',
+        ]);
+        grandTotalRow.font = { bold: true, color: { argb: 'FF166534' } };
+        grandTotalRow.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFF0FDF4' },
+        };
+        grandTotalRow.getCell(3).numFmt = currencyFormat;
+      }
     }
   }
 

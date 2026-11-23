@@ -62,6 +62,15 @@ export interface ReportExpenseCategoryRow {
   percentage: number;
 }
 
+export interface ReportGstInfo {
+  type: 'percentage' | 'amount';
+  value: number;
+  ratePct?: number;
+  gstAmount: number;
+  subtotal: number;
+  grandTotal: number;
+}
+
 export interface ReportData {
   reportType?: ReportKindOption;
   includeItemDetails?: boolean;
@@ -85,4 +94,5 @@ export interface ReportData {
   expenseCategories?: ReportExpenseCategoryRow[];
   itemSummaryRows?: ItemSummaryRow[];
   groupedItemDetails?: GroupedItemDetailsGroup[];
+  gst?: ReportGstInfo | null;
 }

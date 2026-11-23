@@ -24,6 +24,7 @@ export interface ClientReportBuildParams {
   month?: string;    // YYYY-MM
   reportType?: ReportKindOption;
   includeItemDetails?: boolean;
+  gst?: { type: 'percentage' | 'amount'; value: number } | null;
 }
 
 export async function buildClientReportData(
@@ -116,6 +117,23 @@ export async function buildClientReportData(
       percentOfTotal: 10,
     }));
 
+    let demoGstInfo = null;
+    if (params.gst && params.gst.value > 0) {
+      const subtotal = totInc;
+      const gstAmount =
+        params.gst.type === 'percentage'
+          ? Math.round(subtotal * (params.gst.value / 100) * 100) / 100
+          : Math.round(params.gst.value * 100) / 100;
+      demoGstInfo = {
+        type: params.gst.type,
+        value: params.gst.value,
+        ratePct: params.gst.type === 'percentage' ? params.gst.value : undefined,
+        gstAmount,
+        subtotal,
+        grandTotal: Math.round((subtotal + gstAmount) * 100) / 100,
+      };
+    }
+
     return {
       reportType,
       includeItemDetails,
@@ -161,6 +179,7 @@ export async function buildClientReportData(
       salaryRecords,
       expenseCategories,
       itemSummaryRows,
+      gst: demoGstInfo,
     };
   }
 
@@ -342,6 +361,23 @@ export async function buildClientReportData(
     const openingBalance = dailySummaries.length > 0 ? dailySummaries[0].opening : 0;
     const closingBalance = dailySummaries.length > 0 ? dailySummaries[dailySummaries.length - 1].closing : openingBalance + totalIncome - totalExpense;
 
+    let gstInfo = null;
+    if (params.gst && params.gst.value > 0) {
+      const subtotal = totalIncome;
+      const gstAmount =
+        params.gst.type === 'percentage'
+          ? Math.round(subtotal * (params.gst.value / 100) * 100) / 100
+          : Math.round(params.gst.value * 100) / 100;
+      gstInfo = {
+        type: params.gst.type,
+        value: params.gst.value,
+        ratePct: params.gst.type === 'percentage' ? params.gst.value : undefined,
+        gstAmount,
+        subtotal,
+        grandTotal: Math.round((subtotal + gstAmount) * 100) / 100,
+      };
+    }
+
     return {
       reportType,
       includeItemDetails,
@@ -387,6 +423,7 @@ export async function buildClientReportData(
       salaryRecords,
       expenseCategories,
       itemSummaryRows,
+      gst: gstInfo,
     };
   } catch (err) {
     console.error('Failed to build client report data:', err);

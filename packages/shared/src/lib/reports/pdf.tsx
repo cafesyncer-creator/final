@@ -383,6 +383,26 @@ export function CafeLedgerPdfDocument({ data }: { data: ReportData }) {
           </View>
         )}
 
+        {/* OPTIONAL GST KPI ROW */}
+        {showDaily && data.gst && data.gst.gstAmount > 0 && (
+          <View style={[styles.cardsContainer, { marginTop: -10, marginBottom: 14 }]}>
+            <View style={[styles.card, { backgroundColor: '#fffbeb', borderColor: '#fde68a' }]}>
+              <Text style={[styles.cardLabel, { color: '#92400e' }]}>Subtotal (Base Income)</Text>
+              <Text style={[styles.cardValue, { color: '#78350f' }]}>{formatINR(data.gst.subtotal)}</Text>
+            </View>
+            <View style={[styles.card, { backgroundColor: '#fffbeb', borderColor: '#fde68a' }]}>
+              <Text style={[styles.cardLabel, { color: '#92400e' }]}>
+                GST ({data.gst.type === 'percentage' ? `${data.gst.value}%` : 'Flat Amount'})
+              </Text>
+              <Text style={[styles.cardValuePositive, { color: '#b45309' }]}>+{formatINR(data.gst.gstAmount)}</Text>
+            </View>
+            <View style={[styles.cardHighlight, { backgroundColor: '#f0fdf4', borderColor: '#86efac' }]}>
+              <Text style={[styles.cardLabel, { color: '#166534' }]}>Grand Total (Incl. GST)</Text>
+              <Text style={[styles.cardValuePositive, { color: '#15803d' }]}>{formatINR(data.gst.grandTotal)}</Text>
+            </View>
+          </View>
+        )}
+
         {/* DAILY SUMMARY TABLE */}
         {showDaily && (
           <View>
@@ -429,6 +449,31 @@ export function CafeLedgerPdfDocument({ data }: { data: ReportData }) {
                   {formatINR(data.summary.closingBalance, false)}
                 </Text>
               </View>
+
+              {data.gst && data.gst.gstAmount > 0 && (
+                <>
+                  <View style={[styles.tableTotalRow, { backgroundColor: '#fffbeb', borderTopWidth: 0.5, borderTopColor: '#fde68a' }]}>
+                    <Text style={[styles.tableTotalCell, { width: '32%', color: '#92400e' }]}>
+                      GST ({data.gst.type === 'percentage' ? `${data.gst.value}%` : 'FLAT AMOUNT'})
+                    </Text>
+                    <Text style={[styles.tableTotalCellRight, { width: '17%', color: '#b45309' }]}>
+                      +{formatINR(data.gst.gstAmount, false)}
+                    </Text>
+                    <Text style={[styles.tableTotalCellRight, { width: '51%', color: '#92400e', fontSize: 7 }]}>
+                      Calculated on Total Income ({formatINR(data.gst.subtotal, false)})
+                    </Text>
+                  </View>
+                  <View style={[styles.tableTotalRow, { backgroundColor: '#f0fdf4', borderTopWidth: 1, borderTopColor: '#86efac' }]}>
+                    <Text style={[styles.tableTotalCell, { width: '32%', color: '#166534', fontFamily: 'Helvetica-Bold' }]}>
+                      GRAND TOTAL (INCL. GST)
+                    </Text>
+                    <Text style={[styles.tableTotalCellRight, { width: '17%', color: '#166534', fontFamily: 'Helvetica-Bold' }]}>
+                      {formatINR(data.gst.grandTotal, false)}
+                    </Text>
+                    <Text style={[styles.tableTotalCellRight, { width: '51%' }]}>-</Text>
+                  </View>
+                </>
+              )}
             </View>
           </View>
         )}

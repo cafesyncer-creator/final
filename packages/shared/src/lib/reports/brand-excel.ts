@@ -92,6 +92,34 @@ export async function generateBrandConsolidatedExcel(
       tot.getCell(4).numFmt = currencyFormat;
       tot.getCell(5).numFmt = currencyFormat;
       tot.getCell(6).numFmt = currencyFormat;
+
+      if (pdfData.gst && pdfData.gst.gstAmount > 0) {
+        const gstRow = sheet.addRow([
+          `GST (${pdfData.gst.type === 'percentage' ? `${pdfData.gst.value}%` : 'Flat Amount'})`,
+          `Base: ₹${pdfData.gst.subtotal.toFixed(2)}`,
+          pdfData.gst.gstAmount,
+          '',
+          '',
+          '',
+          '',
+        ]);
+        gstRow.font = { bold: true, color: { argb: 'FFB45309' } };
+        gstRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFBEB' } };
+        gstRow.getCell(3).numFmt = currencyFormat;
+
+        const grandRow = sheet.addRow([
+          'GRAND TOTAL (INCL. GST)',
+          '',
+          pdfData.gst.grandTotal,
+          '',
+          '',
+          '',
+          '',
+        ]);
+        grandRow.font = { bold: true, color: { argb: 'FF166534' } };
+        grandRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF0FDF4' } };
+        grandRow.getCell(3).numFmt = currencyFormat;
+      }
     }
 
     sheet.columns.forEach((col, idx) => {
@@ -128,6 +156,32 @@ export async function generateBrandConsolidatedExcel(
       dt.getCell(3).numFmt = currencyFormat;
       dt.getCell(4).numFmt = currencyFormat;
       dt.getCell(5).numFmt = currencyFormat;
+
+      if (pdfData.gst && pdfData.gst.gstAmount > 0) {
+        const dGstRow = dSheet.addRow([
+          `GST (${pdfData.gst.type === 'percentage' ? `${pdfData.gst.value}%` : 'Flat Amount'})`,
+          `Base: ₹${pdfData.gst.subtotal.toFixed(2)}`,
+          pdfData.gst.gstAmount,
+          '',
+          '',
+          '',
+        ]);
+        dGstRow.font = { bold: true, color: { argb: 'FFB45309' } };
+        dGstRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFBEB' } };
+        dGstRow.getCell(3).numFmt = currencyFormat;
+
+        const dGrandRow = dSheet.addRow([
+          'GRAND TOTAL (INCL. GST)',
+          '',
+          pdfData.gst.grandTotal,
+          '',
+          '',
+          '',
+        ]);
+        dGrandRow.font = { bold: true, color: { argb: 'FF166534' } };
+        dGrandRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF0FDF4' } };
+        dGrandRow.getCell(3).numFmt = currencyFormat;
+      }
     }
     dSheet.columns.forEach((c, idx) => {
       c.width = idx === 0 ? 15 : 18;

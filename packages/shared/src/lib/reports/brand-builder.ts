@@ -19,6 +19,7 @@ export interface BrandConsolidatedReportBundle {
   pdfData: BrandPdfData;
   dailySummaries: ReportDailySummaryRow[];
   salaryRecords: ReportSalaryRow[];
+  gst?: import('./types').ReportGstInfo | null;
 }
 
 export async function buildBrandConsolidatedReport(params: {

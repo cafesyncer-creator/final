@@ -36,6 +36,7 @@ interface ReportPreviewModalProps {
   itemKindFilter?: 'expense' | 'income' | 'both';
   itemCategoryFilter?: string;
   itemSearchFilter?: string;
+  gst?: { type: 'percentage' | 'amount'; value: number } | null;
   onDownloadPdf: () => void | Promise<void>;
   isDownloadingPdf?: boolean;
 }
@@ -68,6 +69,7 @@ export function ReportPreviewModal({
   itemKindFilter = 'expense',
   itemCategoryFilter = '',
   itemSearchFilter = '',
+  gst = null,
   onDownloadPdf,
   isDownloadingPdf = false,
 }: ReportPreviewModalProps) {
@@ -90,6 +92,7 @@ export function ReportPreviewModal({
           month,
           reportType,
           includeItemDetails,
+          gst,
         });
 
         if (!reportData) {
@@ -318,6 +321,26 @@ export function ReportPreviewModal({
                     <span className="text-[9px] uppercase text-slate-500 block">Closing</span>
                     <span className="text-xs font-bold"><Money value={r.summary.closingBalance} /></span>
                   </div>
+                  {r.gst && r.gst.gstAmount > 0 && (
+                    <div className="col-span-4 grid grid-cols-2 gap-2 mt-1">
+                      <div className="p-2 rounded-[4px] border border-amber-200 bg-amber-50">
+                        <span className="text-[9px] uppercase text-amber-800 font-semibold block">
+                          GST ({r.gst.type === 'percentage' ? `${r.gst.value}%` : 'Flat Amount'})
+                        </span>
+                        <span className="text-xs font-bold text-amber-700">
+                          +<Money value={r.gst.gstAmount} />
+                        </span>
+                      </div>
+                      <div className="p-2 rounded-[4px] border border-emerald-200 bg-emerald-50">
+                        <span className="text-[9px] uppercase text-emerald-800 font-semibold block">
+                          Grand Total (Incl. GST)
+                        </span>
+                        <span className="text-xs font-bold text-emerald-700">
+                          <Money value={r.gst.grandTotal} />
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               <div className="border border-slate-200 rounded-[4px] overflow-hidden">
@@ -347,6 +370,30 @@ export function ReportPreviewModal({
                       </tr>
                     ))}
                   </tbody>
+                  {r.gst && r.gst.gstAmount > 0 && idx === dayChunks.length - 1 && (
+                    <tfoot>
+                      <tr className="bg-amber-50 font-semibold text-amber-900 border-t border-amber-200">
+                        <td colSpan={2} className="py-1.5 px-2">
+                          GST ({r.gst.type === 'percentage' ? `${r.gst.value}%` : 'Flat Amount'})
+                        </td>
+                        <td className="py-1.5 px-2 text-right font-mono text-amber-700">
+                          +<Money value={r.gst.gstAmount} />
+                        </td>
+                        <td colSpan={3} className="py-1.5 px-2 text-[9px] text-amber-700">
+                          Base Subtotal: <Money value={r.gst.subtotal} />
+                        </td>
+                      </tr>
+                      <tr className="bg-emerald-50 font-bold text-emerald-950 border-t border-emerald-200">
+                        <td colSpan={2} className="py-1.5 px-2">
+                          GRAND TOTAL (INCL. GST)
+                        </td>
+                        <td className="py-1.5 px-2 text-right font-mono text-emerald-700">
+                          <Money value={r.gst.grandTotal} />
+                        </td>
+                        <td colSpan={3} className="py-1.5 px-2"></td>
+                      </tr>
+                    </tfoot>
+                  )}
                 </table>
               </div>
             </div>

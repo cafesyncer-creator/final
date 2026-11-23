@@ -28,6 +28,7 @@ export interface ClientReportBuildParams {
   itemKindFilter?: 'expense' | 'income' | 'both';
   itemCategoryFilter?: string;
   itemSearchFilter?: string;
+  gst?: { type: 'percentage' | 'amount'; value: number } | null;
 }
 
 export async function buildClientReportData(
@@ -164,6 +165,16 @@ export async function buildClientReportData(
       salaryRecords,
       expenseCategories,
       itemSummaryRows,
+      gst: params.gst && params.gst.value > 0 ? {
+        type: params.gst.type,
+        value: params.gst.value,
+        ratePct: params.gst.type === 'percentage' ? params.gst.value : undefined,
+        gstAmount: params.gst.type === 'percentage'
+          ? Math.round(totInc * (params.gst.value / 100) * 100) / 100
+          : Math.round(params.gst.value * 100) / 100,
+        subtotal: totInc,
+        grandTotal: Math.round((totInc + (params.gst.type === 'percentage' ? totInc * (params.gst.value / 100) : params.gst.value)) * 100) / 100,
+      } : null,
     };
   }
 
@@ -380,6 +391,16 @@ export async function buildClientReportData(
       salaryRecords,
       expenseCategories,
       itemSummaryRows,
+      gst: params.gst && params.gst.value > 0 ? {
+        type: params.gst.type,
+        value: params.gst.value,
+        ratePct: params.gst.type === 'percentage' ? params.gst.value : undefined,
+        gstAmount: params.gst.type === 'percentage'
+          ? Math.round(totIncome * (params.gst.value / 100) * 100) / 100
+          : Math.round(params.gst.value * 100) / 100,
+        subtotal: totIncome,
+        grandTotal: Math.round((totIncome + (params.gst.type === 'percentage' ? totIncome * (params.gst.value / 100) : params.gst.value)) * 100) / 100,
+      } : null,
     };
   } catch (err) {
     console.error('Failed to build report data:', err);
@@ -399,6 +420,7 @@ export async function buildClientBrandConsolidatedReport(params: {
   month?: string;
   reportType?: ReportKindOption;
   includeItemDetails?: boolean;
+  gst?: { type: 'percentage' | 'amount'; value: number } | null;
 }): Promise<BrandConsolidatedReportBundle | null> {
   const reportType: ReportKindOption = params.reportType || 'daily_summary';
   const shopFilter = params.shopId || 'all';
@@ -629,12 +651,23 @@ export async function buildClientBrandConsolidatedReport(params: {
         activeShopsCount: shops.length,
       },
       salaryRecords,
+      gst: params.gst && params.gst.value > 0 ? {
+        type: params.gst.type,
+        value: params.gst.value,
+        ratePct: params.gst.type === 'percentage' ? params.gst.value : undefined,
+        gstAmount: params.gst.type === 'percentage'
+          ? Math.round(grandIncome * (params.gst.value / 100) * 100) / 100
+          : Math.round(params.gst.value * 100) / 100,
+        subtotal: grandIncome,
+        grandTotal: Math.round((grandIncome + (params.gst.type === 'percentage' ? grandIncome * (params.gst.value / 100) : params.gst.value)) * 100) / 100,
+      } : null,
     };
 
     return {
       pdfData,
       dailySummaries,
       salaryRecords,
+      gst: pdfData.gst,
     };
   } catch (err) {
     console.error('Failed to build brand consolidated report:', err);

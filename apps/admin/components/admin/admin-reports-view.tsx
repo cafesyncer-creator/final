@@ -10,6 +10,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { getMonthBounds } from '@/lib/calculations/dates';
 import { DemoShop } from '@/lib/demo-admin-data';
@@ -78,6 +79,11 @@ export function AdminReportsView({ shops, currentMonth }: AdminReportsViewProps)
   const [endDate, setEndDate] = useState(bounds.end);
   const [includeItemDetails, setIncludeItemDetails] = useState(false);
 
+  // Optional GST Configuration
+  const [enableGst, setEnableGst] = useState(false);
+  const [gstType, setGstType] = useState<'percentage' | 'amount'>('percentage');
+  const [gstValue, setGstValue] = useState<string>('5');
+
   const [itemFilters, setItemFilters] = useState<ItemWiseFilterState>({
     kind: 'expense',
     category: '',
@@ -96,6 +102,12 @@ export function AdminReportsView({ shops, currentMonth }: AdminReportsViewProps)
   const activeEnd =
     periodMode === 'month' ? getMonthBounds(selectedMonth).end : endDate;
 
+  const parsedGstVal = parseFloat(gstValue) || 0;
+  const activeGst =
+    enableGst && parsedGstVal > 0
+      ? { type: gstType, value: parsedGstVal }
+      : null;
+
   const handleDownloadExcel = async () => {
     setIsExcelLoading(true);
     const toastId = toast.loading('Generating Excel report...');
@@ -109,6 +121,7 @@ export function AdminReportsView({ shops, currentMonth }: AdminReportsViewProps)
           month: selectedMonth,
           reportType: selectedReport,
           includeItemDetails,
+          gst: activeGst,
         });
         if (!bundle) throw new Error('Failed to generate consolidated report');
         const filename = `CafeLedger_${selectedReport}_AllShops_${activeStart}_${activeEnd}.xlsx`;
@@ -125,6 +138,7 @@ export function AdminReportsView({ shops, currentMonth }: AdminReportsViewProps)
           itemKindFilter: itemFilters.kind,
           itemCategoryFilter: itemFilters.category,
           itemSearchFilter: itemFilters.search,
+          gst: activeGst,
         });
         if (!reportData) throw new Error('Failed to generate shop report');
         const filename = `CafeLedger_${selectedReport}_${selectedShop}_${activeStart}_${activeEnd}.xlsx`;
@@ -152,6 +166,7 @@ export function AdminReportsView({ shops, currentMonth }: AdminReportsViewProps)
           month: selectedMonth,
           reportType: selectedReport,
           includeItemDetails,
+          gst: activeGst,
         });
         if (!bundle) throw new Error('Failed to generate consolidated PDF');
         const filename = `CafeLedger_${selectedReport}_AllShops_${activeStart}_${activeEnd}.pdf`;
@@ -168,6 +183,7 @@ export function AdminReportsView({ shops, currentMonth }: AdminReportsViewProps)
           itemKindFilter: itemFilters.kind,
           itemCategoryFilter: itemFilters.category,
           itemSearchFilter: itemFilters.search,
+          gst: activeGst,
         });
         if (!reportData) throw new Error('Failed to generate shop PDF');
         const filename = `CafeLedger_${selectedReport}_${selectedShop}_${activeStart}_${activeEnd}.pdf`;
@@ -334,6 +350,97 @@ export function AdminReportsView({ shops, currentMonth }: AdminReportsViewProps)
           </div>
         )}
 
+        {/* Optional GST Calculation Section */}
+        <div className="pt-3 border-t border-slate-100 space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-800 font-semibold cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={enableGst}
+                onChange={(e) => setEnableGst(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 accent-[var(--brand-primary,#ea580c)]"
+              />
+              <span>Apply GST Calculation (Optional)</span>
+            </label>
+            <Badge variant={enableGst ? 'default' : 'outline'} className="text-[10px] font-medium">
+              {enableGst ? 'Active' : 'Optional / Off'}
+            </Badge>
+          </div>
+
+          {enableGst && (
+            <div className="p-3 bg-amber-50/60 border border-amber-200/80 rounded-lg space-y-3 text-xs max-w-2xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600 font-medium">Calculation Mode:</span>
+                  <div className="inline-flex rounded-md border border-slate-200 bg-white p-0.5 shadow-2xs">
+                    <button
+                      type="button"
+                      onClick={() => setGstType('percentage')}
+                      className={`px-2.5 py-1 text-xs font-semibold rounded ${
+                        gstType === 'percentage'
+                          ? 'bg-[var(--brand-primary,#ea580c)] text-white'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Percentage (%)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGstType('amount')}
+                      className={`px-2.5 py-1 text-xs font-semibold rounded ${
+                        gstType === 'amount'
+                          ? 'bg-[var(--brand-primary,#ea580c)] text-white'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                    >
+                      Flat Amount (₹)
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label className="text-slate-700 font-semibold">
+                    {gstType === 'percentage' ? 'GST Rate (%):' : 'GST Amount (₹):'}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step={gstType === 'percentage' ? '0.1' : '1'}
+                    value={gstValue}
+                    onChange={(e) => setGstValue(e.target.value)}
+                    placeholder={gstType === 'percentage' ? 'e.g. 5 or 18' : 'e.g. 500'}
+                    className="w-24 px-2.5 py-1 text-xs font-bold rounded border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  />
+                </div>
+              </div>
+
+              {gstType === 'percentage' && (
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-slate-500 text-[11px]">Quick standard rates:</span>
+                  {[5, 12, 18, 28].map((rate) => (
+                    <button
+                      key={rate}
+                      type="button"
+                      onClick={() => setGstValue(String(rate))}
+                      className={`px-2 py-0.5 rounded text-[11px] font-semibold border ${
+                        gstValue === String(rate)
+                          ? 'bg-amber-600 text-white border-amber-600'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      {rate}%
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <p className="text-[11px] text-amber-800/90 leading-tight">
+                ℹ️ GST will be calculated at the end of all figures on total income (or consolidated brand income) and displayed in a dedicated GST section across A4 Preview, PDF, and Excel export.
+              </p>
+            </div>
+          )}
+        </div>
+
         {supportsItemDetailsToggle && (
           <label className="flex items-center gap-2.5 pt-2 border-t border-slate-100 text-xs sm:text-sm text-slate-700 cursor-pointer select-none">
             <input
@@ -474,6 +581,7 @@ export function AdminReportsView({ shops, currentMonth }: AdminReportsViewProps)
         itemKindFilter={itemFilters.kind}
         itemCategoryFilter={itemFilters.category}
         itemSearchFilter={itemFilters.search}
+        gst={activeGst}
         onDownloadPdf={handleDownloadPdf}
         isDownloadingPdf={isPdfLoading}
       />
