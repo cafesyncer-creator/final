@@ -29,5 +29,11 @@
     "tsx": "^4.23.15",
     "turbo": "^2.11.11",
     "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-gnu": "1.33.0",
+    "lightningcss-linux-x64-musl": "1.33.0",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.3.5",
+    "@tailwindcss/oxide-linux-x64-musl": "4.3.5"
   }
 }
