@@ -11,8 +11,8 @@ export default function HomePage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#28150E] text-[#F7E5BC] flex items-center justify-center p-4">
-      <span className="text-xs text-[#B9A58A]">Loading CafeSync Master...</span>
+    <div className="min-h-screen bg-[#EFE8E1] text-[#3E2723] flex items-center justify-center p-4">
+      <span className="text-xs text-[#6D4C41]">Loading CafeSync Master...</span>
     </div>
   );
 }

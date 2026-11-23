@@ -5,101 +5,92 @@
   :root,
   .dark {
     /* ==========================================================================
-       CafeSync Platform Master Design Tokens (Dark Only)
-       Sampled from CafeSync brand mark:
-       - Background (espresso): #28150E
-       - Surface: #35201A, Border: #4A2F25
-       - Primary Gold: #C68846 (hover: #D99A55)
-       - Copper Accent: #B46D31
-       - Cream text: #F7E5BC, Muted text: #B9A58A
-       - Button text on gold: #28150E
+       CafeSync Platform Master Design Tokens (Warm Light Brown Theme)
        ========================================================================== */
-    --background: #28150E;
-    --foreground: #F7E5BC;
+    --background: #EFE8E1;
+    --foreground: #3E2723;
 
-    --card: #35201A;
-    --card-foreground: #F7E5BC;
+    --card: #FAF6F2;
+    --card-foreground: #3E2723;
 
-    --popover: #35201A;
-    --popover-foreground: #F7E5BC;
+    --popover: #FAF6F2;
+    --popover-foreground: #3E2723;
 
-    --primary: #C68846;
-    --primary-foreground: #28150E;
+    --primary: #8D5B4C;
+    --primary-foreground: #FFFFFF;
 
     --secondary: #B46D31;
-    --secondary-foreground: #F7E5BC;
+    --secondary-foreground: #FFFFFF;
 
-    --muted: #35201A;
-    --muted-foreground: #B9A58A;
+    --muted: #E5D8CD;
+    --muted-foreground: #6D4C41;
 
-    --accent: #432920;
-    --accent-foreground: #F7E5BC;
+    --accent: #DFCFBE;
+    --accent-foreground: #3E2723;
 
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
 
-    --border: #4A2F25;
-    --input: #4A2F25;
-    --ring: #C68846;
+    --border: #CBB6A2;
+    --input: #CBB6A2;
+    --ring: #8D5B4C;
 
     --radius: 0.5rem;
     --font-brand: var(--font-brand-montserrat), var(--font-brand-poppins), system-ui, -apple-system, sans-serif;
 
     /* Brand Primary & Secondary Overrides for Master components */
-    --brand-primary: #C68846;
-    --brand-primary-rgb: 198, 136, 70;
-    --brand-primary-foreground: #28150E;
+    --brand-primary: #8D5B4C;
+    --brand-primary-rgb: 141, 91, 76;
+    --brand-primary-foreground: #FFFFFF;
     --brand-secondary: #B46D31;
-    --brand-accent: #EBAB51;
-    --brand-ink: #C68846;
-    --brand-banner-foreground: #F7E5BC;
+    --brand-accent: #C68846;
+    --brand-ink: #8D5B4C;
+    --brand-banner-foreground: #FFFFFF;
 
-    --surface-bg: #28150E;
-    --surface-card: #35201A;
-    --surface-text: #F7E5BC;
-    --surface-muted: #2D1B14;
-    --surface-muted-text: #B9A58A;
-    --surface-border: #4A2F25;
+    --surface-bg: #EFE8E1;
+    --surface-card: #FAF6F2;
+    --surface-text: #3E2723;
+    --surface-muted: #E5D8CD;
+    --surface-muted-text: #6D4C41;
+    --surface-border: #CBB6A2;
 
-    --sidebar-bg: #28150E;
-    --sidebar-text: #F7E5BC;
-    --sidebar-muted-text: #B9A58A;
-    --sidebar-border: #4A2F25;
-    --sidebar-active-bg: #C68846;
-    --sidebar-active-text: #28150E;
-    --sidebar-hover-bg: #35201A;
+    --sidebar-bg: #E5D8CD;
+    --sidebar-text: #3E2723;
+    --sidebar-muted-text: #6D4C41;
+    --sidebar-border: #CBB6A2;
+    --sidebar-active-bg: #8D5B4C;
+    --sidebar-active-text: #FFFFFF;
+    --sidebar-hover-bg: #DAC9B9;
 
-    --table-header-bg: #35201A;
-    --table-header-text: #F7E5BC;
+    --table-header-bg: #E0D3C4;
+    --table-header-text: #3E2723;
 
-    /* 5 Chart colors: gold, copper, cream, and two derived tints */
-    --chart-1: #C68846; /* Primary Gold */
-    --chart-2: #B46D31; /* Copper Accent */
-    --chart-3: #F7E5BC; /* Cream */
-    --chart-4: #EBAB51; /* Warm Amber Highlight */
-    --chart-5: #8F5028; /* Deep Bronze */
+    --chart-1: #8D5B4C;
+    --chart-2: #B46D31;
+    --chart-3: #C68846;
+    --chart-4: #6D4C41;
+    --chart-5: #3E2723;
   }
 }
 
 body {
-  background-color: #28150E !important;
-  color: #F7E5BC !important;
+  background-color: #EFE8E1 !important;
+  color: #3E2723 !important;
   min-height: 100vh;
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
-/* Headings use geometric sans (Montserrat / Poppins) and cream color */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-brand-montserrat), var(--font-brand-poppins), system-ui, -apple-system, sans-serif;
-  color: #F7E5BC;
+  color: #3E2723;
 }
 
 /* Master App Theme Mappings for standard Tailwind utilities */
 .bg-white,
 .bg-white\/95,
 .bg-card {
-  background-color: #35201A !important;
-  color: #F7E5BC !important;
+  background-color: #FAF6F2 !important;
+  color: #3E2723 !important;
 }
 
 .bg-slate-50,
@@ -107,86 +98,86 @@ h1, h2, h3, h4, h5, h6 {
 .bg-slate-50\/60,
 .bg-slate-50\/75,
 .bg-slate-50\/80 {
-  background-color: #2D1B14 !important;
+  background-color: #E8DFD5 !important;
 }
 
 .bg-slate-100 {
-  background-color: #432920 !important;
+  background-color: #E0D3C4 !important;
 }
 
 .hover\:bg-slate-50:hover,
 .hover\:bg-slate-100:hover {
-  background-color: #432920 !important;
+  background-color: #DAC9B9 !important;
 }
 
 .text-slate-900,
 .text-slate-950,
 .text-slate-800 {
-  color: #F7E5BC !important;
+  color: #3E2723 !important;
 }
 
 .text-slate-700,
 .text-slate-600 {
-  color: #E2CEAA !important;
+  color: #4E342E !important;
 }
 
 .text-slate-500,
 .text-slate-400 {
-  color: #B9A58A !important;
+  color: #6D4C41 !important;
 }
 
 .border-slate-200,
 .border-slate-300,
 .border-slate-100,
 .border-border {
-  border-color: #4A2F25 !important;
+  border-color: #CBB6A2 !important;
 }
 
 .divide-slate-100 > :not(:last-child),
 .divide-slate-200 > :not(:last-child) {
-  border-color: #4A2F25 !important;
+  border-color: #CBB6A2 !important;
 }
 
 /* Master buttons mapping */
 .bg-slate-900 {
-  background-color: #C68846 !important;
-  color: #28150E !important;
+  background-color: #8D5B4C !important;
+  color: #FFFFFF !important;
 }
 
 .hover\:bg-slate-800:hover,
 .hover\:bg-slate-900:hover {
-  background-color: #D99A55 !important;
-  color: #28150E !important;
+  background-color: #734032 !important;
+  color: #FFFFFF !important;
 }
 
 /* Inputs, Textareas, Selects in Master */
 input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
 select,
 textarea {
-  background-color: #28150E !important;
-  color: #F7E5BC !important;
-  border-color: #4A2F25 !important;
+  background-color: #FFFFFF !important;
+  color: #3E2723 !important;
+  border-color: #CBB6A2 !important;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: rgba(185, 165, 138, 0.6) !important;
+  color: rgba(109, 76, 65, 0.6) !important;
 }
 
 /* Master Tables */
 table thead tr {
-  background-color: #35201A !important;
-  border-bottom-color: #4A2F25 !important;
+  background-color: #E0D3C4 !important;
+  border-bottom-color: #CBB6A2 !important;
 }
 
 table thead th {
-  color: #F7E5BC !important;
+  color: #3E2723 !important;
 }
 
 table tbody tr {
-  border-bottom-color: #4A2F25 !important;
+  border-bottom-color: #CBB6A2 !important;
 }
 
 table tbody tr:hover {
-  background-color: #35201A !important;
+  background-color: #E8DFD5 !important;
 }

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#28150E',
+  themeColor: '#8D5B4C',
 };
 
 export default function RootLayout({
@@ -26,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`h-full dark ${ALL_FONT_VARIABLE_CLASSES}`} style={{ colorScheme: 'dark', backgroundColor: '#28150E' }}>
-      <body className="min-h-full flex flex-col font-sans bg-[#28150E] text-[#F7E5BC] antialiased">
+    <html lang="en" className={`h-full ${ALL_FONT_VARIABLE_CLASSES}`} style={{ backgroundColor: '#EFE8E1' }}>
+      <body className="min-h-full flex flex-col font-sans bg-[#EFE8E1] text-[#3E2723] antialiased">
         <ReactQueryProvider>
           <AuthProvider>
             {children}

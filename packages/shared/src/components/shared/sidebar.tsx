@@ -188,11 +188,11 @@ export function SharedSidebar({
 
   const iconSrc = isMaster ? null : settings?.icon_url || logoSrc;
 
-  // Render Master's CafeSync branded dark sidebar
+  // Render Master's CafeSync branded light brown sidebar
   if (isMaster) {
     const masterNavContent = (
-      <div className="flex flex-col h-full bg-[#28150E] border-r border-[#4A2F25] text-[#F7E5BC]">
-        <div className="flex h-16 items-center justify-between px-4 border-b border-[#4A2F25] bg-[#28150E]">
+      <div className="flex flex-col h-full bg-[#E5D8CD] border-r border-[#CBB6A2] text-[#3E2723]">
+        <div className="flex h-16 items-center justify-between px-4 border-b border-[#CBB6A2] bg-[#DAC9B9]">
           <div className="flex items-center gap-2.5 min-w-0">
             <img
               src="/brand/cafesync-icon-192.png"
@@ -201,10 +201,10 @@ export function SharedSidebar({
             />
             {!isCollapsed && (
               <div className="min-w-0 leading-tight">
-                <span className="font-bold text-[#F7E5BC] tracking-tight text-base block truncate">
+                <span className="font-bold text-[#3E2723] tracking-tight text-base block truncate">
                   CafeSync
                 </span>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#B46D31] block">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#8D5B4C] block">
                   Master
                 </span>
               </div>
@@ -216,7 +216,7 @@ export function SharedSidebar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="hidden md:inline-flex h-8 w-8 text-[#B9A58A] hover:text-[#F7E5BC] hover:bg-[#35201A]"
+                className="hidden md:inline-flex h-8 w-8 text-[#6D4C41] hover:text-[#3E2723] hover:bg-[#DAC9B9]"
                 onClick={onToggleCollapse}
                 title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               >
@@ -230,7 +230,7 @@ export function SharedSidebar({
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden text-[#B9A58A] hover:text-[#F7E5BC] hover:bg-[#35201A]"
+              className="md:hidden text-[#6D4C41] hover:text-[#3E2723] hover:bg-[#DAC9B9]"
               onClick={onCloseMobile}
             >
               <X className="h-5 w-5" />
@@ -240,7 +240,7 @@ export function SharedSidebar({
 
         <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           {!isCollapsed && (
-            <div className="px-3 mb-2 text-[11px] font-semibold tracking-wider text-[#B9A58A] uppercase">
+            <div className="px-3 mb-2 text-[11px] font-semibold tracking-wider text-[#6D4C41] uppercase">
               Platform Management
             </div>
           )}
@@ -262,8 +262,8 @@ export function SharedSidebar({
                   'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors select-none',
                   isCollapsed && 'justify-center px-2',
                   isActive
-                    ? 'bg-[#C68846] text-[#28150E] font-semibold shadow-xs'
-                    : 'text-[#F7E5BC] hover:bg-[#35201A] hover:text-[#EBAB51]'
+                    ? 'bg-[#8D5B4C] text-white font-semibold shadow-xs'
+                    : 'text-[#4E342E] hover:bg-[#DAC9B9] hover:text-[#28150E]'
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -273,21 +273,21 @@ export function SharedSidebar({
           })}
         </div>
 
-        <div className="p-3 border-t border-[#4A2F25] bg-[#35201A]/60 space-y-2">
+        <div className="p-3 border-t border-[#CBB6A2] bg-[#DAC9B9]/60 space-y-2">
           <button
             type="button"
             onClick={handleSignOutClick}
             className={cn(
-              'w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition-colors cursor-pointer text-left',
+              'w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-rose-700 hover:bg-rose-100 hover:text-rose-800 transition-colors cursor-pointer text-left',
               isCollapsed && 'justify-center px-2'
             )}
             title="Sign Out"
           >
-            <LogOut className="h-4 w-4 shrink-0 text-rose-400" />
+            <LogOut className="h-4 w-4 shrink-0 text-rose-700" />
             {!isCollapsed && <span>Sign Out</span>}
           </button>
           {!isCollapsed && (
-            <div className="flex items-center justify-between text-[11px] text-[#B9A58A] px-2 py-0.5">
+            <div className="flex items-center justify-between text-[11px] text-[#6D4C41] px-2 py-0.5">
               <span>CafeSync Master</span>
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" title="Online" />
             </div>

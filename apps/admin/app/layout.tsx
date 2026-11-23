@@ -7,8 +7,13 @@ import { AuthProvider } from '@/lib/auth-context';
 import { ClientThemeProvider } from '@/lib/theme/client-theme-provider';
 
 export const metadata: Metadata = {
-  title: 'CafeLedger | Brand Admin Portal',
-  description: 'Enterprise Cafe Accounting & Multi-Outlet Management Platform',
+  title: 'CafeSync | Brand Admin Portal',
+  description: 'CafeSync Brand Administration & Multi-Outlet Management Platform',
+  icons: {
+    icon: '/brand/cafesync-favicon-64.png',
+    shortcut: '/brand/cafesync-favicon-64.png',
+    apple: '/brand/cafesync-icon-192.png',
+  },
 };
 
 export default function RootLayout({

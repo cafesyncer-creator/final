@@ -100,7 +100,7 @@ export function SharedAppLayout({ user, brand, children }: SharedLayoutProps) {
       <div
         className={cn(
           'min-h-screen flex flex-col antialiased',
-          isMaster ? 'bg-[#28150E] text-[#F7E5BC]' : 'bg-[var(--surface-bg,#f8fafc)]'
+          isMaster ? 'bg-[#EFE8E1] text-[#3E2723]' : 'bg-[var(--surface-bg,#f8fafc)]'
         )}
       >
         <SharedSidebar
