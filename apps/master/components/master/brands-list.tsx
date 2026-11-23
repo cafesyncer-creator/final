@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Building2,
   Plus,
@@ -31,6 +32,7 @@ interface BrandsListProps {
 
 export function BrandsList({ initialBrands }: BrandsListProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [brands, setBrands] = useState<DemoMasterBrand[]>(initialBrands);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'suspended'>('all');
@@ -320,6 +322,8 @@ export function BrandsList({ initialBrands }: BrandsListProps) {
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         onCreated={() => {
+          queryClient.invalidateQueries({ queryKey: ['master-brands'] });
+          queryClient.invalidateQueries({ queryKey: ['master-dashboard'] });
           router.refresh();
         }}
       />

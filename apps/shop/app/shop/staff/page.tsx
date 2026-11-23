@@ -34,7 +34,8 @@ function StaffSalaryContent() {
         const employeesData: EmployeeSalaryItem[] = DEMO_EMPLOYEES.map((emp) => {
           const rate = Number(emp.rate_per_day ?? 0);
           const days = selectedMonth === currentMonth ? 26 : 28;
-          const gross = Math.round(days * rate * 100) / 100;
+          const overtime = 0;
+          const gross = Math.round((days * rate + overtime) * 100) / 100;
           const advances = 1500;
           const paid = 0;
           const balance = Math.round((gross - advances - paid) * 100) / 100;
@@ -46,6 +47,7 @@ function StaffSalaryContent() {
             role_title: emp.role_title,
             rate_per_day: rate,
             days_worked: days,
+            overtime_pay: overtime,
             gross,
             advances_total: advances,
             paid_total: paid,
@@ -80,7 +82,7 @@ function StaffSalaryContent() {
         shopId
           ? supabase
               .from('salary_records')
-              .select('employee_id, days_worked, rate_snapshot, gross, advances_total, paid_total, balance')
+              .select('employee_id, days_worked, rate_snapshot, overtime_pay, gross, advances_total, paid_total, balance')
               .eq('shop_id', shopId)
               .eq('month', selectedMonth)
           : Promise.resolve({ data: [] }),
@@ -107,7 +109,8 @@ function StaffSalaryContent() {
         const rec = salaryRecordMap[emp.id];
         const rate = Number(rec?.rate_snapshot ?? emp.rate_per_day ?? 0);
         const days = rec ? Number(rec.days_worked || 0) : 0;
-        const gross = rec ? Number(rec.gross || 0) : Math.round(days * rate * 100) / 100;
+        const overtime = rec ? Number(rec.overtime_pay || 0) : 0;
+        const gross = rec ? Number(rec.gross || 0) : Math.round((days * rate + overtime) * 100) / 100;
         const advances = rec ? Number(rec.advances_total || 0) : 0;
         const paid = Number(rec?.paid_total || 0);
         const balance = rec ? Number(rec.balance || 0) : Math.round((gross - advances - paid) * 100) / 100;
@@ -119,6 +122,7 @@ function StaffSalaryContent() {
           role_title: emp.role_title,
           rate_per_day: rate,
           days_worked: days,
+          overtime_pay: overtime,
           gross,
           advances_total: advances,
           paid_total: paid,

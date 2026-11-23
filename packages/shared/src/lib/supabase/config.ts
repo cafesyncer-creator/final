@@ -3,8 +3,8 @@
  * in environment variables, preventing hanging HTTP requests to placeholder domains.
  */
 export function isSupabaseConfigured(): boolean {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pebfoqrkotfhqqzccqja.supabase.co';
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_U1DD9sjFiSSVQj5g4Q-Rzg_XzZfO4di';
 
   if (!url || !anonKey) return false;
   if (url.includes('placeholder') || url.includes('your-project') || url.includes('example.com')) {

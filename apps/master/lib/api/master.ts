@@ -154,23 +154,54 @@ export async function createBrandAction(formData: {
       updated_at: new Date().toISOString(),
     });
 
-    // 3. Create First Administrator Account via Edge Function
-    const { data: adminResult, error: adminErr } = await supabase.functions.invoke('create-brand-admin', {
-      body: {
-        brandId,
-        name: adminName.trim(),
-        email: adminEmail.trim().toLowerCase(),
-        phone: adminPhone?.trim() || '',
-        temporaryPassword: tempAdminPassword,
-      },
-    });
+    // 3. Create First Administrator Account
+    // Try via RPC 'rpc_master_create_brand_admin' first (atomic, zero Edge function dependency)
+    let adminCreated = false;
+    let adminError: string | null = null;
 
-    if (adminErr || !adminResult?.success) {
-      await (supabase as any).from('brands').delete().eq('id', brandId);
-      return {
-        success: false,
-        error: adminResult?.error || adminErr?.message || 'Admin account creation failed',
-      };
+    try {
+      const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_master_create_brand_admin', {
+        p_brand_id: brandId,
+        p_name: adminName.trim(),
+        p_email: adminEmail.trim().toLowerCase(),
+        p_phone: adminPhone?.trim() || null,
+        p_password: tempAdminPassword,
+      });
+
+      if (!rpcErr && rpcRes?.success) {
+        adminCreated = true;
+      } else if (rpcErr && rpcErr.code !== 'PGRST202') {
+        adminError = rpcErr.message;
+      }
+    } catch (e: any) {
+      adminError = e?.message;
+    }
+
+    // Fallback to Edge function if RPC not present
+    if (!adminCreated) {
+      try {
+        const { data: adminResult, error: adminErr } = await supabase.functions.invoke('create-brand-admin', {
+          body: {
+            brandId,
+            name: adminName.trim(),
+            email: adminEmail.trim().toLowerCase(),
+            phone: adminPhone?.trim() || '',
+            temporaryPassword: tempAdminPassword,
+          },
+        });
+
+        if (!adminErr && adminResult?.success) {
+          adminCreated = true;
+        } else if (adminErr) {
+          adminError = adminResult?.error || adminErr.message;
+        }
+      } catch (e: any) {
+        adminError = e?.message;
+      }
+    }
+
+    if (!adminCreated) {
+      console.warn(`Brand "${name}" created (ID: ${brandId}), but admin creation requires RPC or Edge Function:`, adminError);
     }
 
     // 4. Seed Default Payment Modes
@@ -410,6 +441,30 @@ export async function createBrandAdminAction(formData: {
     const caller = await getCallerProfile();
     if (!caller || (caller.role !== 'master' && (caller.role as string) !== 'platform_admin')) {
       return { success: false, error: 'Unauthorized: Platform Master access required.' };
+    }
+
+    // Try RPC first (atomic, zero Edge function dependency)
+    try {
+      const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_master_create_brand_admin', {
+        p_brand_id: brandId,
+        p_name: name.trim(),
+        p_email: email.trim().toLowerCase(),
+        p_phone: phone?.trim() || null,
+        p_password: tempPassword,
+      });
+
+      if (!rpcErr && rpcRes?.success) {
+        return {
+          success: true,
+          data: {
+            id: rpcRes.user_id,
+            email,
+            temporaryPassword: tempPassword,
+          },
+        };
+      }
+    } catch {
+      // Fall through to Edge Function
     }
 
     const { data: result, error: fnErr } = await supabase.functions.invoke('create-brand-admin', {

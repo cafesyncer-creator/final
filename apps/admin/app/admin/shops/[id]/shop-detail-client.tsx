@@ -295,6 +295,7 @@ export function ShopDetailClient() {
           role_title: e.role_title,
           rate_per_day: Number(e.rate_per_day),
           days_worked: Number(rec?.days_worked) || 0,
+          overtime_pay: Number(rec?.overtime_pay) || 0,
           gross: Number(rec?.gross) || 0,
           advances_total: Number(rec?.advances_total) || 0,
           paid_total: Number(rec?.paid_total) || 0,

@@ -26,6 +26,7 @@ export interface EmployeeSalaryItem {
   role_title?: string | null;
   rate_per_day: number;
   days_worked: number;
+  overtime_pay?: number;
   gross: number;
   advances_total: number;
   paid_total: number;
@@ -54,7 +55,17 @@ export function StaffSalaryManager({
     return init;
   });
 
+  // Overtime pay editing state
+  const [overtimeState, setOvertimeState] = useState<Record<string, string>>(() => {
+    const init: Record<string, string> = {};
+    employees.forEach((e) => {
+      init[e.id] = String(e.overtime_pay || 0);
+    });
+    return init;
+  });
+
   const [savingEmpId, setSavingEmpId] = useState<string | null>(null);
+  const [savingOtEmpId, setSavingOtEmpId] = useState<string | null>(null);
 
   // Dialog State for Advance or Payment
   const [activeModalType, setActiveModalType] = useState<TxnType | null>(null);
@@ -75,10 +86,12 @@ export function StaffSalaryManager({
       return;
     }
 
+    const ot = parseFloat(overtimeState[empId] || '0');
     setSavingEmpId(empId);
     const formData = new FormData();
     formData.append('employee_id', empId);
     formData.append('days_worked', String(days));
+    formData.append('overtime_pay', String(isNaN(ot) ? 0 : ot));
     formData.append('month', selectedMonth);
 
     startTransition(async () => {
@@ -88,6 +101,32 @@ export function StaffSalaryManager({
         toast.error(res.error);
       } else {
         toast.success(res.message || 'Attendance saved!');
+      }
+    });
+  };
+
+  const handleOvertimeSave = (empId: string) => {
+    const ot = parseFloat(overtimeState[empId] || '0');
+    if (isNaN(ot) || ot < 0) {
+      toast.error('Overtime pay cannot be negative.');
+      return;
+    }
+
+    const days = parseFloat(daysState[empId] || '0');
+    setSavingOtEmpId(empId);
+    const formData = new FormData();
+    formData.append('employee_id', empId);
+    formData.append('days_worked', String(isNaN(days) ? 0 : days));
+    formData.append('overtime_pay', String(ot));
+    formData.append('month', selectedMonth);
+
+    startTransition(async () => {
+      const res = await updateDaysWorkedAction(formData);
+      setSavingOtEmpId(null);
+      if (res?.error) {
+        toast.error(res.error);
+      } else {
+        toast.success(res.message || 'Overtime pay saved!');
       }
     });
   };
@@ -242,6 +281,7 @@ export function StaffSalaryManager({
                 <th className="py-3 px-4">Employee</th>
                 <th className="py-3 px-4 text-center">Sal / Day</th>
                 <th className="py-3 px-4 text-center">Days Worked</th>
+                <th className="py-3 px-4 text-center">Overtime (₹)</th>
                 <th className="py-3 px-4 text-right">Gross Salary</th>
                 <th className="py-3 px-4 text-right">Advances (SA)</th>
                 <th className="py-3 px-4 text-right">Paid</th>
@@ -252,13 +292,18 @@ export function StaffSalaryManager({
             <tbody className="divide-y divide-slate-100">
               {filteredEmployees.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 px-4 text-center text-slate-400">
+                  <td colSpan={9} className="py-8 px-4 text-center text-slate-400">
                     No staff members match your search or filter.
                   </td>
                 </tr>
               ) : (
               filteredEmployees.map((emp) => {
                 const isSaving = savingEmpId === emp.id;
+                const isSavingOt = savingOtEmpId === emp.id;
+                const empOt = parseFloat(overtimeState[emp.id] ?? String(emp.overtime_pay || 0)) || 0;
+                const empDays = parseFloat(daysState[emp.id] ?? String(emp.days_worked || 0)) || 0;
+                const currentGross = Math.round(((empDays * emp.rate_per_day) + empOt) * 100) / 100;
+                const currentBalance = Math.round((currentGross - emp.advances_total - emp.paid_total) * 100) / 100;
 
                 return (
                   <tr key={emp.id} className="hover:bg-slate-50/70 transition-colors">
@@ -304,8 +349,41 @@ export function StaffSalaryManager({
                       </div>
                     </td>
 
+                    {/* Overtime Pay Editable Input */}
+                    <td className="py-3 px-4 text-center">
+                      <div className="inline-flex items-center gap-1">
+                        <Input
+                          type="number"
+                          step="50"
+                          min="0"
+                          disabled={isMonthClosed || isSavingOt}
+                          value={overtimeState[emp.id] ?? ''}
+                          onChange={(e) =>
+                            setOvertimeState({ ...overtimeState, [emp.id]: e.target.value })
+                          }
+                          onBlur={() => handleOvertimeSave(emp.id)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleOvertimeSave(emp.id)}
+                          placeholder="0"
+                          className="w-20 h-8 text-center font-bold text-xs text-blue-700"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleOvertimeSave(emp.id)}
+                          disabled={isMonthClosed || isSavingOt}
+                          title="Save Overtime"
+                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
+                        >
+                          {isSavingOt ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <Check className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      </div>
+                    </td>
+
                     <td className="py-3 px-4 text-right font-mono font-semibold text-slate-900">
-                      {formatINR(emp.gross)}
+                      {formatINR(currentGross)}
                     </td>
 
                     <td className="py-3 px-4 text-right font-mono font-semibold text-red-700">
@@ -317,7 +395,7 @@ export function StaffSalaryManager({
                     </td>
 
                     <td className="py-3 px-4 text-right font-mono font-bold text-sm text-[var(--brand-primary,#ea580c)]">
-                      {formatINR(emp.balance)}
+                      {formatINR(currentBalance)}
                     </td>
 
                     <td className="py-3 px-4 text-center">
@@ -422,6 +500,35 @@ export function StaffSalaryManager({
                       disabled={isMonthClosed || isSaving}
                     >
                       {isSaving ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Save'}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Overtime Pay Row */}
+                <div className="flex items-center justify-between bg-blue-50/40 p-2 rounded-lg">
+                  <span className="text-xs font-semibold text-blue-900">Overtime (OT ₹):</span>
+                  <div className="flex items-center gap-1.5">
+                    <Input
+                      type="number"
+                      step="50"
+                      min="0"
+                      disabled={isMonthClosed || savingOtEmpId === emp.id}
+                      value={overtimeState[emp.id] ?? ''}
+                      onChange={(e) =>
+                        setOvertimeState({ ...overtimeState, [emp.id]: e.target.value })
+                      }
+                      onBlur={() => handleOvertimeSave(emp.id)}
+                      placeholder="0"
+                      className="w-20 h-8 text-center font-bold text-xs text-blue-700"
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="min-h-[44px] px-3 text-xs text-blue-700 border-blue-200"
+                      onClick={() => handleOvertimeSave(emp.id)}
+                      disabled={isMonthClosed || savingOtEmpId === emp.id}
+                    >
+                      {savingOtEmpId === emp.id ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Save'}
                     </Button>
                   </div>
                 </div>

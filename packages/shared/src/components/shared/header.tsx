@@ -27,6 +27,7 @@ import { ActivityDrawer } from './activity-drawer';
 import { ScreenHelpTour } from './screen-help-tour';
 import { UserRole } from '@/lib/supabase/types';
 import { cn } from '@/lib/utils';
+import { createClient } from '@/lib/supabase/client';
 
 export interface HeaderUser {
   id?: string;
@@ -277,7 +278,22 @@ export function SharedHeader({
 
             <DropdownMenuItem
               className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
-              onClick={onSignOut}
+              onClick={
+                onSignOut ||
+                (async () => {
+                  try {
+                    const supabase = createClient();
+                    await supabase.auth.signOut();
+                    if (typeof window !== 'undefined') {
+                      localStorage.removeItem('cafesync_demo_user');
+                      localStorage.removeItem('supabase.auth.token');
+                    }
+                  } catch (e) {
+                    console.error('Sign out failed:', e);
+                  }
+                  window.location.href = '/login/';
+                })
+              }
             >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Sign out</span>

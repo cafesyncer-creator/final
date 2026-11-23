@@ -504,6 +504,7 @@ export interface Database {
           month: string;
           days_worked: number;
           rate_snapshot: number;
+          overtime_pay: number;
           gross: number;
           advances_total: number;
           paid_total: number;
@@ -518,6 +519,7 @@ export interface Database {
           month: string;
           days_worked?: number;
           rate_snapshot?: number;
+          overtime_pay?: number;
           gross?: number;
           advances_total?: number;
           paid_total?: number;
@@ -532,6 +534,7 @@ export interface Database {
           month?: string;
           days_worked?: number;
           rate_snapshot?: number;
+          overtime_pay?: number;
           gross?: number;
           advances_total?: number;
           paid_total?: number;

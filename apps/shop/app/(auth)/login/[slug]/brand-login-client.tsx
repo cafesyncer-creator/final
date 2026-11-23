@@ -229,40 +229,6 @@ function BrandLoginInner({
           </div>
         </div>
 
-        {showDemoFill && demoAccounts.length > 0 && (
-          <div
-            className="p-3 border space-y-2"
-            style={{
-              borderRadius: 'var(--radius-btn, 0.5rem)',
-              backgroundColor: 'var(--brand-50, #fff7ed)',
-              borderColor: 'var(--brand-200, #fed7aa)',
-            }}
-          >
-            <div
-              className="flex items-center gap-1.5 text-xs font-semibold"
-              style={{ color: 'var(--brand-ink, #9a3412)' }}
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Demo Accounts for {brandName} (Password: password123)</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {demoAccounts.map((acc) => (
-                <button
-                  key={acc.email}
-                  type="button"
-                  onClick={() => {
-                    setEmail(acc.email);
-                    setPassword('password123');
-                    setCustomError(null);
-                  }}
-                  className="text-[11px] font-medium bg-white hover:opacity-90 text-slate-800 border border-slate-200 rounded-[var(--radius-btn,0.375rem)] px-2.5 py-1 cursor-pointer transition-colors shadow-2xs"
-                >
-                  {acc.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         <Button
           type="submit"

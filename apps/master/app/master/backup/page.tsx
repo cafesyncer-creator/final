@@ -17,17 +17,8 @@ export default function MasterBackupPage() {
     queryKey: ['master-backup-data', isLive],
     queryFn: async () => {
       if (!isLive) {
-        const demoBrands = DEMO_MASTER_BRANDS.map((b) => ({
-          id: b.id,
-          name: b.name,
-          slug: b.slug,
-          shops_count: b.shops_count || 1,
-          status: b.status || 'active',
-          shops: DEMO_ADMIN_SHOPS.map((s) => ({ id: s.id, name: s.name, code: s.code })),
-        }));
-
         return {
-          brands: demoBrands,
+          brands: [],
           history: [],
           removals: [],
           batches: [],

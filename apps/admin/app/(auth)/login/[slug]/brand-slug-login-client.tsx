@@ -239,15 +239,7 @@ export default function BrandSlugLoginClient() {
   const cssVars = buildBrandCssVariables(brandSettingsObj, brandLogin.default_mode || 'light');
   const inlineCss = cssVarsToStyleText(cssVars, [':root', '.brand-portal-root']);
 
-  const demoAccounts: DemoQuickAccount[] = isSupabaseConfigured()
-    ? []
-    : [
-        {
-          email: 'admin@snaxia.com',
-          label: 'Brand Administrator (Admin)',
-          role: 'admin',
-        },
-      ];
+  const demoAccounts: DemoQuickAccount[] = [];
 
   const primaryFg = pickReadableTextColor(brandLogin.primary_color);
 
@@ -257,7 +249,7 @@ export default function BrandSlugLoginClient() {
       <BrandLoginClient
         brandLogin={brandLogin}
         demoAccounts={demoAccounts}
-        showDemoFill={!isSupabaseConfigured()}
+        showDemoFill={false}
         primaryFg={primaryFg}
       />
     </>

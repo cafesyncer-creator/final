@@ -202,7 +202,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(null);
       setBrand(null);
       setShop(null);
-      window.location.href = '/login';
+      window.location.href = '/login/';
       return;
     }
 
@@ -215,7 +215,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(null);
       setBrand(null);
       setShop(null);
-      window.location.href = '/login';
+      window.location.href = '/login/';
     }
   };
 

@@ -246,21 +246,8 @@ export default function BrandSlugLoginClient() {
   const inlineCss = cssVarsToStyleText(cssVars, [':root', '.brand-portal-root']);
   const primaryFg = pickReadableTextColor(brandLogin.primary_color, '#ffffff', '#0f172a');
 
-  const showDemoFill = !isSupabaseConfigured();
-  const demoAccounts: DemoQuickAccount[] = showDemoFill
-    ? Object.values(DEMO_USERS)
-        .filter(
-          (u) => u.role !== 'master' && u.brand?.id === brandLogin.brand_id
-        )
-        .map((u) => ({
-          email: u.email,
-          role: u.role,
-          label:
-            u.role === 'admin'
-              ? `🏢 ${u.fullName} (Admin)`
-              : `☕ ${u.shop?.name || u.fullName} (Manager)`,
-        }))
-    : [];
+  const showDemoFill = false;
+  const demoAccounts: DemoQuickAccount[] = [];
 
   return (
     <>

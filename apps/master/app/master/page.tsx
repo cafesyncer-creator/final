@@ -18,22 +18,15 @@ export default function MasterDashboardPage() {
     queryKey: ['master-dashboard', isLive],
     queryFn: async () => {
       if (!isLive) {
-        const totalBrands = DEMO_MASTER_BRANDS.length;
-        const activeBrands = DEMO_MASTER_BRANDS.filter((b) => b.status === 'active').length;
-        const suspendedBrands = DEMO_MASTER_BRANDS.filter((b) => b.status === 'suspended').length;
-        const totalShops = DEMO_MASTER_BRANDS.reduce((acc, b) => acc + b.shops_count, 0);
-        const totalUsers = DEMO_MASTER_BRANDS.reduce((acc, b) => acc + b.admins_count + b.shops_count, 0);
-        const totalMonthlyVolume = DEMO_MASTER_BRANDS.reduce((acc, b) => acc + b.monthly_volume, 0);
-
         return {
-          brands: DEMO_MASTER_BRANDS,
+          brands: [],
           metrics: {
-            totalBrands,
-            activeBrands,
-            suspendedBrands,
-            totalShops,
-            totalUsers,
-            totalMonthlyVolume,
+            totalBrands: 0,
+            activeBrands: 0,
+            suspendedBrands: 0,
+            totalShops: 0,
+            totalUsers: 0,
+            totalMonthlyVolume: 0,
           },
           needsBackupReminder: false,
         };

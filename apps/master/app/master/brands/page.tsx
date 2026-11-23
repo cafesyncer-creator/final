@@ -18,7 +18,7 @@ export default function MasterBrandsPage() {
     queryKey: ['master-brands', isLive],
     queryFn: async () => {
       if (!isLive) {
-        return DEMO_MASTER_BRANDS;
+        return [];
       }
 
       const monthBounds = getMonthBounds(getCurrentMonthKolkata());

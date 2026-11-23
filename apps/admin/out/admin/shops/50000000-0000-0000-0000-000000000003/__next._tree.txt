@@ -1,4 +1,4 @@
-:HL["/_next/static/chunks/1-7b7rqzx7e6c.css","style"]
+:HL["/_next/static/chunks/0i6if_04fgwa6.css","style"]
 :HL["/_next/static/media/22a701959b157a82-s.p.2o7m9ogm38dql.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/29e2a75af8e45044-s.p.2kjei9psvcorz.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/3e7212cfb3cf4439-s.p.1igz0qek6uidy.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
@@ -12,4 +12,4 @@
 3:[["children",{"s":{"n":"id","t":"d","k":"50000000-0000-0000-0000-000000000003","s":[]},"h":96,"c":"$Q4"}]]
 2:[["children",{"s":"shops","h":96,"c":"$Q3"}]]
 1:[["children",{"s":"admin","h":100,"c":"$Q2"}]]
-0:{"b":"EQ7bruETDUk22sTcKX1P6","t":{"t":{"s":"","h":88,"c":"$Q1"}}}
+0:{"b":"XjQ_HemsL7xU5Wb1x-E3T","t":{"t":{"s":"","h":88,"c":"$Q1"}}}

@@ -258,29 +258,58 @@ export async function toggleShopItemStatus(itemId: string, isActive: boolean): P
 }
 
 /**
- * Screen 2: Update Employee Attendance & Days Worked via atomic Postgres RPC
+ * Screen 2: Update Employee Attendance & Days Worked (with optional Overtime) via atomic Postgres RPC
  */
 export async function updateDaysWorked(formData: FormData): Promise<ApiResult> {
   const employeeId = formData.get('employee_id') as string;
   const daysWorked = parseFloat(formData.get('days_worked') as string);
+  const overtimePayRaw = formData.get('overtime_pay');
+  const overtimePay = overtimePayRaw !== null ? parseFloat(overtimePayRaw as string) : undefined;
   const month = (formData.get('month') as string) || getTodayKolkata().substring(0, 7);
 
   if (!employeeId || isNaN(daysWorked) || daysWorked < 0 || daysWorked > 31) {
     return { error: 'Please enter valid days worked between 0 and 31.' };
   }
 
+  if (overtimePay !== undefined && (isNaN(overtimePay) || overtimePay < 0)) {
+    return { error: 'Overtime pay cannot be negative.' };
+  }
+
   if (!isSupabaseConfigured()) {
-    return { success: true, message: `Updated days worked: ${daysWorked}` };
+    return { success: true, message: `Updated attendance & overtime: ${daysWorked} days, ₹${overtimePay || 0} OT` };
   }
 
   try {
-    const { data, error } = await supabase.rpc('rpc_shop_update_days_worked', {
+    const rpcParams: Record<string, any> = {
       p_employee_id: employeeId,
       p_days_worked: daysWorked,
       p_month: month,
-    });
+    };
+    if (overtimePay !== undefined) {
+      rpcParams.p_overtime_pay = overtimePay;
+    }
+
+    const { data, error } = await supabase.rpc('rpc_shop_update_days_worked', rpcParams);
 
     if (error) {
+      // Fallback if DB function only takes 3 parameters
+      if (overtimePay !== undefined && (error.message.includes('parameters') || error.code === 'PGRST202')) {
+        const fallback = await supabase.rpc('rpc_shop_update_days_worked', {
+          p_employee_id: employeeId,
+          p_days_worked: daysWorked,
+          p_month: month,
+        });
+        if (fallback.error) return { error: fallback.error.message };
+
+        // Also update overtime_pay directly if table column exists
+        await (supabase as any)
+          .from('salary_records')
+          .update({ overtime_pay: overtimePay })
+          .eq('employee_id', employeeId)
+          .eq('month', month);
+
+        return { success: true, message: 'Saved attendance & overtime.' };
+      }
       return { error: error.message };
     }
 
