@@ -18,11 +18,16 @@ async function getCallerProfile() {
 
   const { data: profile } = await (supabase as any)
     .from('profiles')
-    .select('id, role, full_name, email')
+    .select('id, role, full_name')
     .eq('id', authData.user.id)
     .maybeSingle();
 
-  return profile;
+  if (!profile) return null;
+
+  return {
+    ...profile,
+    email: authData.user.email,
+  };
 }
 
 // -----------------------------------------------------------------------------
