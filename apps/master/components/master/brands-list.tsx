@@ -286,6 +286,7 @@ export function BrandsList({ initialBrands }: BrandsListProps) {
               <div className="flex items-center gap-1.5">
                 <Link
                   href={`/master/brands/${brand.id}/theme`}
+                  prefetch={false}
                   className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-100 shadow-2xs"
                 >
                   <Paintbrush className="h-3 w-3" />
@@ -294,6 +295,7 @@ export function BrandsList({ initialBrands }: BrandsListProps) {
 
                 <Link
                   href={`/master/brands/${brand.id}`}
+                  prefetch={false}
                   className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 shadow-2xs"
                 >
                   <span>Details</span>

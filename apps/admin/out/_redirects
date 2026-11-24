@@ -1,12 +1,32 @@
-/login                /login/index.html                     200
-/login/               /login/index.html                     200
-/login/snaxia         /login/snaxia/index.html              200
-/login/snaxia/        /login/snaxia/index.html              200
-/login/roast-and-brew /login/roast-and-brew/index.html      200
-/login/roast-and-brew/ /login/roast-and-brew/index.html     200
-/login/chai-craft     /login/chai-craft/index.html          200
-/login/chai-craft/    /login/chai-craft/index.html          200
-/login/*              /login/_placeholder/index.html        200
-/admin/shops          /admin/shops/index.html               200
-/admin/shops/         /admin/shops/index.html               200
-/admin/shops/*        /admin/shops/_placeholder/index.html  200
+/login                     /login/index.html                             200
+/login/                    /login/index.html                             200
+/login/snaxia              /login/snaxia/index.html                      200
+/login/snaxia/             /login/snaxia/index.html                      200
+/login/roast-and-brew      /login/roast-and-brew/index.html              200
+/login/roast-and-brew/     /login/roast-and-brew/index.html             200
+/login/chai-craft          /login/chai-craft/index.html                  200
+/login/chai-craft/         /login/chai-craft/index.html                  200
+/login/*                   /login/_placeholder/index.html                200
+/login/*/                  /login/_placeholder/index.html                200
+
+# Admin shops dynamic routes
+/admin/shops/*             /admin/shops/_placeholder/index.html          200
+/admin/shops/*/            /admin/shops/_placeholder/index.html          200
+
+# Admin top-level routes
+/admin                     /admin/index.html                             200
+/admin/                    /admin/index.html                             200
+/admin/shops               /admin/shops/index.html                       200
+/admin/shops/              /admin/shops/index.html                       200
+/admin/items               /admin/items/index.html                       200
+/admin/items/              /admin/items/index.html                       200
+/admin/employees           /admin/employees/index.html                   200
+/admin/employees/          /admin/employees/index.html                   200
+/admin/reports             /admin/reports/index.html                     200
+/admin/reports/            /admin/reports/index.html                     200
+/admin/assets              /admin/assets/index.html                      200
+/admin/assets/             /admin/assets/index.html                      200
+/admin/settings            /admin/settings/index.html                    200
+/admin/settings/           /admin/settings/index.html                    200
+/admin/users               /admin/users/index.html                       200
+/admin/users/              /admin/users/index.html                       200

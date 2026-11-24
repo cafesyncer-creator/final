@@ -1,12 +1,30 @@
-/login                /login/index.html                             200
-/login/               /login/index.html                             200
-/login/snaxia         /login/snaxia/index.html                      200
-/login/snaxia/        /login/snaxia/index.html                      200
-/login/roast-and-brew /login/roast-and-brew/index.html              200
-/login/roast-and-brew/ /login/roast-and-brew/index.html             200
-/login/chai-craft     /login/chai-craft/index.html                  200
-/login/chai-craft/    /login/chai-craft/index.html                  200
-/login/*              /login/_placeholder/index.html                200
-/master/brands        /master/brands/index.html                     200
-/master/brands/       /master/brands/index.html                     200
-/master/brands/*      /master/brands/_placeholder/index.html        200
+/login                     /login/index.html                             200
+/login/                    /login/index.html                             200
+/login/snaxia              /login/snaxia/index.html                      200
+/login/snaxia/             /login/snaxia/index.html                      200
+/login/roast-and-brew      /login/roast-and-brew/index.html              200
+/login/roast-and-brew/     /login/roast-and-brew/index.html             200
+/login/chai-craft          /login/chai-craft/index.html                  200
+/login/chai-craft/         /login/chai-craft/index.html                  200
+/login/*                   /login/_placeholder/index.html                200
+/login/*/                  /login/_placeholder/index.html                200
+
+# Theme Studio dynamic routes (MUST be before general /master/brands/*)
+/master/brands/*/theme     /master/brands/_placeholder/theme/index.html  200
+/master/brands/*/theme/    /master/brands/_placeholder/theme/index.html  200
+
+# Brand details dynamic routes
+/master/brands/*           /master/brands/_placeholder/index.html        200
+/master/brands/*/          /master/brands/_placeholder/index.html        200
+
+# Top-level master routes
+/master                    /master/index.html                            200
+/master/                   /master/index.html                            200
+/master/brands             /master/brands/index.html                     200
+/master/brands/            /master/brands/index.html                     200
+/master/audit              /master/audit/index.html                      200
+/master/audit/             /master/audit/index.html                      200
+/master/backup             /master/backup/index.html                     200
+/master/backup/            /master/backup/index.html                     200
+/master/settings           /master/settings/index.html                   200
+/master/settings/          /master/settings/index.html                   200
