@@ -266,17 +266,14 @@ export async function deleteShopAction(shopId: string): Promise<ActionResult> {
   }
 
   try {
-    const { data: result, error: fnErr } = await supabase.functions.invoke('delete-shop', {
-      body: {
-        shopId,
-        brandId: caller.brandId,
-      },
+    const { data: result, error: rpcErr } = await (supabase as any).rpc('rpc_admin_delete_shop', {
+      p_shop_id: shopId,
     });
 
-    if (fnErr || !result?.success) {
+    if (rpcErr || !result?.success) {
       return {
         success: false,
-        error: result?.error || fnErr?.message || 'Failed to delete shop',
+        error: result?.error || rpcErr?.message || 'Failed to delete shop',
       };
     }
 
@@ -371,24 +368,22 @@ export async function createShopWithManagerAction(formData: {
   }
 
   try {
-    const { data: result, error: fnErr } = await supabase.functions.invoke('create-shop-with-manager', {
-      body: {
-        name,
-        code,
-        address,
-        phone,
-        managerName,
-        managerPhone,
-        username,
-        temporaryPassword: tempPassword,
-        brandId: caller.brandId,
-      },
+    const { data: result, error: rpcErr } = await (supabase as any).rpc('rpc_admin_create_shop_with_manager', {
+      p_name: name,
+      p_code: code,
+      p_manager_name: managerName,
+      p_username: username,
+      p_password: tempPassword,
+      p_address: address || null,
+      p_phone: phone || null,
+      p_manager_phone: managerPhone || null,
+      p_brand_id: caller.brandId,
     });
 
-    if (fnErr || !result?.success) {
+    if (rpcErr || !result?.success) {
       return {
         success: false,
-        error: result?.error || fnErr?.message || 'Failed to create shop and manager account',
+        error: result?.error || rpcErr?.message || 'Failed to create shop and manager account',
       };
     }
 
@@ -397,10 +392,10 @@ export async function createShopWithManagerAction(formData: {
       data: {
         shop: result.shop,
         credentials: {
-          shopName: name,
-          shopCode: code,
-          managerName,
-          loginPath,
+          shopName: result.credentials?.shopName || name,
+          shopCode: result.credentials?.shopCode || code,
+          managerName: result.credentials?.managerName || managerName,
+          loginPath: result.credentials?.loginPath || loginPath,
           username: result.credentials?.username || username,
           password: result.credentials?.password || tempPassword,
         },
@@ -469,21 +464,19 @@ export async function createManagerUserAction(formData: {
   }
 
   try {
-    const { data: result, error: fnErr } = await supabase.functions.invoke('create-manager-user', {
-      body: {
-        shopId,
-        fullName,
-        phone,
-        username,
-        temporaryPassword: tempPassword,
-        brandId: caller.brandId,
-      },
+    const { data: result, error: rpcErr } = await (supabase as any).rpc('rpc_admin_create_manager_user', {
+      p_shop_id: shopId,
+      p_full_name: fullName,
+      p_username: username,
+      p_password: tempPassword,
+      p_phone: phone || null,
+      p_email: formData.email?.trim() || null,
     });
 
-    if (fnErr || !result?.success) {
+    if (rpcErr || !result?.success) {
       return {
         success: false,
-        error: result?.error || fnErr?.message || 'Failed to create manager user',
+        error: result?.error || rpcErr?.message || 'Failed to create manager user',
       };
     }
 
@@ -494,8 +487,8 @@ export async function createManagerUserAction(formData: {
         credentials: {
           shopName: result.credentials?.shopName || 'Outlet',
           shopCode: result.credentials?.shopCode || 'SHOP',
-          managerName: fullName,
-          loginPath,
+          managerName: result.credentials?.managerName || fullName,
+          loginPath: result.credentials?.loginPath || loginPath,
           username: result.credentials?.username || username,
           password: result.credentials?.password || tempPassword,
         },
@@ -605,18 +598,15 @@ export async function resetManagerPasswordAction(
   }
 
   try {
-    const { data: result, error: fnErr } = await supabase.functions.invoke('reset-manager-password', {
-      body: {
-        userId,
-        temporaryPassword: tempPassword,
-        brandId: caller.brandId,
-      },
+    const { data: result, error: rpcErr } = await (supabase as any).rpc('rpc_admin_reset_manager_password', {
+      p_user_id: userId,
+      p_password: tempPassword,
     });
 
-    if (fnErr || !result?.success) {
+    if (rpcErr || !result?.success) {
       return {
         success: false,
-        error: result?.error || fnErr?.message || 'Failed to reset password',
+        error: result?.error || rpcErr?.message || 'Failed to reset password',
       };
     }
 
