@@ -39,6 +39,7 @@ export default function MasterDashboardPage() {
         { data: dbSummaries },
         { count: activeUsersCount },
         { data: latestBackup },
+        { data: authEmails },
       ] = await Promise.all([
         (supabase as any)
           .from('brands')
@@ -61,7 +62,15 @@ export default function MasterDashboardPage() {
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle(),
+        (supabase as any)
+          .rpc('get_auth_user_emails')
+          .catch(() => ({ data: [] })),
       ]);
+
+      const emailMap = new Map<string, string>();
+      (authEmails || []).forEach((u: any) => {
+        if (u?.user_id && u?.email) emailMap.set(u.user_id, u.email);
+      });
 
       if (brandsErr) {
         console.error('Master dashboard brands query failed:', brandsErr);
@@ -122,7 +131,7 @@ export default function MasterDashboardPage() {
           admins: admins.map((a: any) => ({
             id: a.id,
             full_name: a.full_name,
-            email: a.email || (a.username ? `${a.username}@${b.slug}.cafesync.app` : ''),
+            email: emailMap.get(a.id) || a.email || (a.username ? `${a.username}@${b.slug}.cafesync.app` : ''),
             phone: a.phone || '',
             is_active: a.is_active,
           })),

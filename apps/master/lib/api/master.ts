@@ -502,11 +502,20 @@ export async function createBrandAdminAction(formData: {
   }
 }
 
-export async function resetBrandAdminPasswordAction(adminUserId: string, newPassword?: string): Promise<ActionResult> {
+export async function resetBrandAdminPasswordAction(
+  adminUserId: string,
+  newPassword?: string,
+  meta?: {
+    brandId?: string;
+    name?: string;
+    email?: string;
+    phone?: string;
+  }
+): Promise<ActionResult> {
   const tempPass = newPassword || 'ResetAdmin' + Math.floor(1000 + Math.random() * 9000) + '!';
 
   if (!isSupabaseConfigured()) {
-    return { success: true, data: { temporaryPassword: tempPass } };
+    return { success: true, data: { temporaryPassword: tempPass, email: meta?.email } };
   }
 
   try {
@@ -515,21 +524,99 @@ export async function resetBrandAdminPasswordAction(adminUserId: string, newPass
       return { success: false, error: 'Unauthorized: Platform Master access required.' };
     }
 
-    const { data: result, error: fnErr } = await supabase.functions.invoke('reset-manager-password', {
-      body: {
-        userId: adminUserId,
-        temporaryPassword: tempPass,
-      },
-    });
+    // 1. Resolve user profile if brandId or name are missing
+    let targetBrandId = meta?.brandId;
+    let targetName = meta?.name;
+    let targetPhone = meta?.phone;
+    let targetEmail = meta?.email?.trim();
 
-    if (fnErr || !result?.success) {
-      return {
-        success: false,
-        error: result?.error || fnErr?.message || 'Failed to reset admin password via Edge Function',
-      };
+    if (!targetBrandId || !targetName) {
+      const { data: profile } = await (supabase as any)
+        .from('profiles')
+        .select('id, full_name, brand_id, phone')
+        .eq('id', adminUserId)
+        .maybeSingle();
+
+      if (profile) {
+        targetBrandId = targetBrandId || profile.brand_id;
+        targetName = targetName || profile.full_name;
+        targetPhone = targetPhone || profile.phone;
+      }
     }
 
-    return { success: true, data: { temporaryPassword: tempPass } };
+    // 2. Resolve email if missing
+    if (!targetEmail) {
+      try {
+        const { data: emailRows } = await (supabase as any).rpc('get_auth_user_emails');
+        const match = (emailRows || []).find((r: any) => r.user_id === adminUserId);
+        if (match?.email) {
+          targetEmail = match.email;
+        }
+      } catch (err) {
+        console.warn('Could not fetch user emails from get_auth_user_emails:', err);
+      }
+    }
+
+    // 3. Try direct atomic PostgreSQL RPC first (zero Edge Function dependency)
+    if (targetBrandId && targetName && targetEmail) {
+      try {
+        const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_master_create_brand_admin', {
+          p_brand_id: targetBrandId,
+          p_name: targetName.trim(),
+          p_email: targetEmail.trim().toLowerCase(),
+          p_phone: targetPhone?.trim() || null,
+          p_password: tempPass,
+        });
+
+        if (!rpcErr && rpcRes?.success) {
+          // Write audit log
+          await (supabase as any).from('audit_log').insert({
+            user_id: caller.id,
+            action: 'RESET_PASSWORD',
+            table_name: 'profiles',
+            record_id: adminUserId,
+            new_data: {
+              admin_id: adminUserId,
+              email: targetEmail,
+              brand_id: targetBrandId,
+            },
+          });
+
+          return {
+            success: true,
+            data: {
+              temporaryPassword: tempPass,
+              email: targetEmail,
+            },
+          };
+        }
+      } catch (rpcEx) {
+        console.warn('RPC password reset attempt failed, falling back:', rpcEx);
+      }
+    }
+
+    // 4. Fallback to Edge Function (if deployed)
+    try {
+      const { data: result, error: fnErr } = await supabase.functions.invoke('reset-manager-password', {
+        body: {
+          userId: adminUserId,
+          temporaryPassword: tempPass,
+        },
+      });
+
+      if (!fnErr && result?.success) {
+        return { success: true, data: { temporaryPassword: tempPass, email: targetEmail } };
+      }
+    } catch {
+      // Ignored
+    }
+
+    return {
+      success: false,
+      error: !targetEmail
+        ? 'Could not resolve the login email for this administrator. Please verify the user account.'
+        : 'Failed to reset admin password. Please try again.',
+    };
   } catch (err: any) {
     return { success: false, error: err.message };
   }

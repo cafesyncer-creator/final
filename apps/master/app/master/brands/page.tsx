@@ -26,6 +26,7 @@ export default function MasterBrandsPage() {
       const [
         { data: dbBrands, error: brandsErr },
         { data: dbSummaries },
+        { data: authEmails },
       ] = await Promise.all([
         (supabase as any)
           .from('brands')
@@ -36,11 +37,19 @@ export default function MasterBrandsPage() {
           .select('shop_id, income')
           .gte('summary_date', monthBounds.start)
           .lte('summary_date', monthBounds.end),
+        (supabase as any)
+          .rpc('get_auth_user_emails')
+          .catch(() => ({ data: [] })),
       ]);
 
       if (brandsErr) {
         console.error('Master brands query failed:', brandsErr);
       }
+
+      const emailMap = new Map<string, string>();
+      (authEmails || []).forEach((u: any) => {
+        if (u?.user_id && u?.email) emailMap.set(u.user_id, u.email);
+      });
 
       const shopToBrandMap = new Map<string, string>();
       (dbBrands || []).forEach((b: any) => {
@@ -86,7 +95,7 @@ export default function MasterBrandsPage() {
           admins: admins.map((a: any) => ({
             id: a.id,
             full_name: a.full_name,
-            email: a.email || (a.username ? `${a.username}@${b.slug}.cafesync.app` : ''),
+            email: emailMap.get(a.id) || a.email || (a.username ? `${a.username}@${b.slug}.cafesync.app` : ''),
             phone: a.phone || '',
             is_active: a.is_active,
           })),

@@ -201,12 +201,17 @@ export function BrandDetailView({
     }
   };
 
-  const handleResetAdminPass = async (adminId: string, email: string) => {
+  const handleResetAdminPass = async (adm: { id: string; email: string; full_name: string; phone?: string }) => {
     const tempPass = 'ResetPass' + Math.floor(1000 + Math.random() * 9000) + '!';
     try {
-      const res = await resetBrandAdminPasswordAction(adminId, tempPass);
+      const res = await resetBrandAdminPasswordAction(adm.id, tempPass, {
+        brandId: currentBrand.id,
+        name: adm.full_name,
+        email: adm.email,
+        phone: adm.phone,
+      });
       if (res.success) {
-        setTempPassModal({ email, pass: tempPass });
+        setTempPassModal({ email: res.data?.email || adm.email || 'Admin', pass: tempPass });
       } else {
         toast.error(res.error || 'Password reset failed');
       }
@@ -463,7 +468,7 @@ export function BrandDetailView({
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleResetAdminPass(adm.id, adm.email)}
+                      onClick={() => handleResetAdminPass(adm)}
                       className="h-7 px-2 text-[11px]"
                     >
                       <KeyRound className="h-3 w-3 mr-1 text-slate-600" />

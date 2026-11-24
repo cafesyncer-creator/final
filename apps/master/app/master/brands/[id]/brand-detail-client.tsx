@@ -62,6 +62,7 @@ export function BrandDetailClient() {
         { data: dbBrand, error: brandErr },
         { data: dbShops },
         { data: recentAudit },
+        { data: authEmails },
       ] = await Promise.all([
         (supabase as any)
           .from('brands')
@@ -80,10 +81,18 @@ export function BrandDetailClient() {
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle(),
+        (supabase as any)
+          .rpc('get_auth_user_emails')
+          .catch(() => ({ data: [] })),
       ]);
 
       if (brandErr) console.error('Brand detail load error:', brandErr);
       if (!dbBrand) return null;
+
+      const emailMap = new Map<string, string>();
+      (authEmails || []).forEach((u: any) => {
+        if (u?.user_id && u?.email) emailMap.set(u.user_id, u.email);
+      });
 
       const brandProfiles = Array.isArray(dbBrand.profiles) ? dbBrand.profiles : [];
       const admins = brandProfiles.filter((p: any) => p.role === 'admin');
@@ -110,7 +119,7 @@ export function BrandDetailClient() {
         admins: admins.map((a: any) => ({
           id: a.id,
           full_name: a.full_name,
-          email: a.email || (a.username ? `${a.username}@${dbBrand.slug}.cafesync.app` : ''),
+          email: emailMap.get(a.id) || a.email || (a.username ? `${a.username}@${dbBrand.slug}.cafesync.app` : ''),
           phone: a.phone || '',
           is_active: a.is_active,
         })),
