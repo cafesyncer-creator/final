@@ -16,7 +16,6 @@ SET
     phone_change = COALESCE(phone_change, ''),
     phone_change_token = COALESCE(phone_change_token, ''),
     reauthentication_token = COALESCE(reauthentication_token, ''),
-    phone = COALESCE(phone, ''),
     email_confirmed_at = COALESCE(email_confirmed_at, now()),
     email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
     is_sso_user = COALESCE(is_sso_user, false),
@@ -33,7 +32,6 @@ WHERE
     OR phone_change IS NULL
     OR phone_change_token IS NULL
     OR reauthentication_token IS NULL
-    OR phone IS NULL
     OR email_confirmed_at IS NULL
     OR email_change_confirm_status IS NULL
     OR is_sso_user IS NULL
@@ -156,7 +154,7 @@ BEGIN
             now(),
             '', '', '', '',
             '', '', '', '',
-            COALESCE(p_phone, ''), false, false, 0
+            nullif(trim(p_phone), ''), false, false, 0
         );
     ELSE
         UPDATE auth.users
@@ -170,7 +168,7 @@ BEGIN
             phone_change = COALESCE(phone_change, ''),
             phone_change_token = COALESCE(phone_change_token, ''),
             reauthentication_token = COALESCE(reauthentication_token, ''),
-            phone = COALESCE(phone, p_phone, ''),
+            phone = COALESCE(nullif(trim(p_phone), ''), phone),
             email_confirmed_at = COALESCE(email_confirmed_at, now()),
             email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
             is_sso_user = COALESCE(is_sso_user, false),
@@ -368,7 +366,7 @@ BEGIN
             now(),
             '', '', '', '',
             '', '', '', '',
-            COALESCE(p_manager_phone, ''), false, false, 0
+            nullif(trim(p_manager_phone), ''), false, false, 0
         );
     ELSE
         UPDATE auth.users
@@ -382,7 +380,7 @@ BEGIN
             phone_change = COALESCE(phone_change, ''),
             phone_change_token = COALESCE(phone_change_token, ''),
             reauthentication_token = COALESCE(reauthentication_token, ''),
-            phone = COALESCE(phone, p_manager_phone, ''),
+            phone = COALESCE(nullif(trim(p_manager_phone), ''), phone),
             email_confirmed_at = COALESCE(email_confirmed_at, now()),
             email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
             is_sso_user = COALESCE(is_sso_user, false),
@@ -562,7 +560,7 @@ BEGIN
             now(),
             '', '', '', '',
             '', '', '', '',
-            COALESCE(p_phone, ''), false, false, 0
+            nullif(trim(p_phone), ''), false, false, 0
         );
     ELSE
         UPDATE auth.users
@@ -576,7 +574,7 @@ BEGIN
             phone_change = COALESCE(phone_change, ''),
             phone_change_token = COALESCE(phone_change_token, ''),
             reauthentication_token = COALESCE(reauthentication_token, ''),
-            phone = COALESCE(phone, p_phone, ''),
+            phone = COALESCE(nullif(trim(p_phone), ''), phone),
             email_confirmed_at = COALESCE(email_confirmed_at, now()),
             email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
             is_sso_user = COALESCE(is_sso_user, false),
@@ -725,7 +723,6 @@ BEGIN
         phone_change = COALESCE(phone_change, ''),
         phone_change_token = COALESCE(phone_change_token, ''),
         reauthentication_token = COALESCE(reauthentication_token, ''),
-        phone = COALESCE(phone, ''),
         email_confirmed_at = COALESCE(email_confirmed_at, now()),
         email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
         is_sso_user = COALESCE(is_sso_user, false),
