@@ -37,9 +37,13 @@ export default function MasterBrandsPage() {
           .select('shop_id, income')
           .gte('summary_date', monthBounds.start)
           .lte('summary_date', monthBounds.end),
-        (supabase as any)
-          .rpc('get_auth_user_emails')
-          .catch(() => ({ data: [] })),
+        (async () => {
+          try {
+            return await (supabase as any).rpc('get_auth_user_emails');
+          } catch {
+            return { data: [] };
+          }
+        })(),
       ]);
 
       if (brandsErr) {

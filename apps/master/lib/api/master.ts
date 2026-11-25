@@ -160,7 +160,7 @@ export async function createBrandAction(formData: {
     });
 
     // 3. Create First Administrator Account
-    // Try via RPC 'rpc_master_create_brand_admin' first (atomic, zero Edge function dependency)
+    // Via RPC 'rpc_master_create_brand_admin' (atomic, zero Edge function dependency)
     let adminCreated = false;
     let adminError: string | null = null;
 
@@ -175,38 +175,15 @@ export async function createBrandAction(formData: {
 
       if (!rpcErr && rpcRes?.success) {
         adminCreated = true;
-      } else if (rpcErr && rpcErr.code !== 'PGRST202') {
+      } else if (rpcErr) {
         adminError = rpcErr.message;
       }
     } catch (e: any) {
       adminError = e?.message;
     }
 
-    // Fallback to Edge function if RPC not present
     if (!adminCreated) {
-      try {
-        const { data: adminResult, error: adminErr } = await supabase.functions.invoke('create-brand-admin', {
-          body: {
-            brandId,
-            name: adminName.trim(),
-            email: adminEmail.trim().toLowerCase(),
-            phone: adminPhone?.trim() || '',
-            temporaryPassword: tempAdminPassword,
-          },
-        });
-
-        if (!adminErr && adminResult?.success) {
-          adminCreated = true;
-        } else if (adminErr) {
-          adminError = adminResult?.error || adminErr.message;
-        }
-      } catch (e: any) {
-        adminError = e?.message;
-      }
-    }
-
-    if (!adminCreated) {
-      console.warn(`Brand "${name}" created (ID: ${brandId}), but admin creation requires RPC or Edge Function:`, adminError);
+      console.warn(`Brand "${name}" created (ID: ${brandId}), but admin creation returned error:`, adminError);
     }
 
     // 4. Seed Default Payment Modes
@@ -396,15 +373,23 @@ export async function deleteBrandAction(brandId: string): Promise<ActionResult> 
       return { success: false, error: 'Unauthorized: Platform Master access required.' };
     }
 
-    const { data: result, error: fnErr } = await supabase.functions.invoke('delete-brand', {
-      body: { brandId },
-    });
+    // 1. Try atomic removal RPC first
+    try {
+      const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_remove_brand_data', {
+        p_brand_id: brandId,
+      });
 
-    if (fnErr || !result?.success) {
-      return {
-        success: false,
-        error: result?.error || fnErr?.message || 'Failed to delete brand via Edge Function',
-      };
+      if (!rpcErr && rpcRes?.success) {
+        return { success: true };
+      }
+    } catch {
+      // Fall through to direct table delete
+    }
+
+    // 2. Direct table deletion
+    const { error: delErr } = await (supabase as any).from('brands').delete().eq('id', brandId);
+    if (delErr) {
+      return { success: false, error: delErr.message };
     }
 
     return { success: true };
@@ -448,54 +433,29 @@ export async function createBrandAdminAction(formData: {
       return { success: false, error: 'Unauthorized: Platform Master access required.' };
     }
 
-    // Try RPC first (atomic, zero Edge function dependency)
-    try {
-      const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_master_create_brand_admin', {
-        p_brand_id: brandId,
-        p_name: name.trim(),
-        p_email: email.trim().toLowerCase(),
-        p_phone: phone?.trim() || null,
-        p_password: tempPassword,
-      });
-
-      if (!rpcErr && rpcRes?.success) {
-        return {
-          success: true,
-          data: {
-            id: rpcRes.user_id,
-            email,
-            temporaryPassword: tempPassword,
-          },
-        };
-      }
-    } catch {
-      // Fall through to Edge Function
-    }
-
-    const { data: result, error: fnErr } = await supabase.functions.invoke('create-brand-admin', {
-      body: {
-        brandId,
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        phone: phone?.trim() || '',
-        temporaryPassword: tempPassword,
-      },
+    // Atomic PostgreSQL RPC (zero Edge function dependency)
+    const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_master_create_brand_admin', {
+      p_brand_id: brandId,
+      p_name: name.trim(),
+      p_email: email.trim().toLowerCase(),
+      p_phone: phone?.trim() || null,
+      p_password: tempPassword,
     });
 
-    if (fnErr || !result?.success) {
+    if (!rpcErr && rpcRes?.success) {
       return {
-        success: false,
-        error: result?.error || fnErr?.message || 'Failed to create brand admin via Edge Function',
+        success: true,
+        data: {
+          id: rpcRes.user_id,
+          email,
+          temporaryPassword: tempPassword,
+        },
       };
     }
 
     return {
-      success: true,
-      data: {
-        id: result.data?.id,
-        email,
-        temporaryPassword: tempPassword,
-      },
+      success: false,
+      error: rpcErr?.message || rpcRes?.error || 'Failed to create brand administrator.',
     };
   } catch (err: any) {
     return { success: false, error: err.message };
@@ -524,7 +484,39 @@ export async function resetBrandAdminPasswordAction(
       return { success: false, error: 'Unauthorized: Platform Master access required.' };
     }
 
-    // 1. Resolve user profile if brandId or name are missing
+    // 1. Try atomic rpc_admin_reset_manager_password FIRST (resets auth.users directly by user ID)
+    try {
+      const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_admin_reset_manager_password', {
+        p_user_id: adminUserId,
+        p_password: tempPass,
+      });
+
+      if (!rpcErr && rpcRes?.success) {
+        await (supabase as any).from('audit_log').insert({
+          user_id: caller.id,
+          action: 'RESET_PASSWORD',
+          table_name: 'profiles',
+          record_id: adminUserId,
+          new_data: {
+            admin_id: adminUserId,
+            email: meta?.email || rpcRes?.credentials?.username,
+            brand_id: meta?.brandId,
+          },
+        });
+
+        return {
+          success: true,
+          data: {
+            temporaryPassword: tempPass,
+            email: meta?.email || rpcRes?.credentials?.username || 'Admin',
+          },
+        };
+      }
+    } catch (rpcEx) {
+      console.warn('rpc_admin_reset_manager_password attempt failed:', rpcEx);
+    }
+
+    // 2. Resolve user profile and email if needed for rpc_master_create_brand_admin
     let targetBrandId = meta?.brandId;
     let targetName = meta?.name;
     let targetPhone = meta?.phone;
@@ -544,7 +536,6 @@ export async function resetBrandAdminPasswordAction(
       }
     }
 
-    // 2. Resolve email if missing
     if (!targetEmail) {
       try {
         const { data: emailRows } = await (supabase as any).rpc('get_auth_user_emails');
@@ -557,65 +548,44 @@ export async function resetBrandAdminPasswordAction(
       }
     }
 
-    // 3. Try direct atomic PostgreSQL RPC first (zero Edge Function dependency)
+    // 3. Fallback to rpc_master_create_brand_admin
     if (targetBrandId && targetName && targetEmail) {
-      try {
-        const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_master_create_brand_admin', {
-          p_brand_id: targetBrandId,
-          p_name: targetName.trim(),
-          p_email: targetEmail.trim().toLowerCase(),
-          p_phone: targetPhone?.trim() || null,
-          p_password: tempPass,
-        });
-
-        if (!rpcErr && rpcRes?.success) {
-          // Write audit log
-          await (supabase as any).from('audit_log').insert({
-            user_id: caller.id,
-            action: 'RESET_PASSWORD',
-            table_name: 'profiles',
-            record_id: adminUserId,
-            new_data: {
-              admin_id: adminUserId,
-              email: targetEmail,
-              brand_id: targetBrandId,
-            },
-          });
-
-          return {
-            success: true,
-            data: {
-              temporaryPassword: tempPass,
-              email: targetEmail,
-            },
-          };
-        }
-      } catch (rpcEx) {
-        console.warn('RPC password reset attempt failed, falling back:', rpcEx);
-      }
-    }
-
-    // 4. Fallback to Edge Function (if deployed)
-    try {
-      const { data: result, error: fnErr } = await supabase.functions.invoke('reset-manager-password', {
-        body: {
-          userId: adminUserId,
-          temporaryPassword: tempPass,
-        },
+      const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('rpc_master_create_brand_admin', {
+        p_brand_id: targetBrandId,
+        p_name: targetName.trim(),
+        p_email: targetEmail.trim().toLowerCase(),
+        p_phone: targetPhone?.trim() || null,
+        p_password: tempPass,
       });
 
-      if (!fnErr && result?.success) {
-        return { success: true, data: { temporaryPassword: tempPass, email: targetEmail } };
+      if (!rpcErr && rpcRes?.success) {
+        await (supabase as any).from('audit_log').insert({
+          user_id: caller.id,
+          action: 'RESET_PASSWORD',
+          table_name: 'profiles',
+          record_id: adminUserId,
+          new_data: {
+            admin_id: adminUserId,
+            email: targetEmail,
+            brand_id: targetBrandId,
+          },
+        });
+
+        return {
+          success: true,
+          data: {
+            temporaryPassword: tempPass,
+            email: targetEmail,
+          },
+        };
+      } else if (rpcErr) {
+        return { success: false, error: rpcErr.message };
       }
-    } catch {
-      // Ignored
     }
 
     return {
       success: false,
-      error: !targetEmail
-        ? 'Could not resolve the login email for this administrator. Please verify the user account.'
-        : 'Failed to reset admin password. Please try again.',
+      error: 'Failed to reset admin password. Please verify the user profile exists.',
     };
   } catch (err: any) {
     return { success: false, error: err.message };

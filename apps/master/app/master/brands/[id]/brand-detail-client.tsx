@@ -58,33 +58,38 @@ export function BrandDetailClient() {
         return null;
       }
 
-      const [
-        { data: dbBrand, error: brandErr },
-        { data: dbShops },
-        { data: recentAudit },
-        { data: authEmails },
-      ] = await Promise.all([
-        (supabase as any)
-          .from('brands')
-          .select('*, profiles(id, full_name, username, phone, role, is_active), brand_settings(logo_url, primary_color, secondary_color)')
-          .eq('id', brandId)
-          .maybeSingle(),
-        (supabase as any)
-          .from('shops')
-          .select('*')
-          .eq('brand_id', brandId)
-          .order('name', { ascending: true }),
-        (supabase as any)
-          .from('audit_log')
-          .select('created_at')
-          .eq('brand_id', brandId)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-        (supabase as any)
-          .rpc('get_auth_user_emails')
-          .catch(() => ({ data: [] })),
-      ]);
+      try {
+        const [
+          { data: dbBrand, error: brandErr },
+          { data: dbShops },
+          { data: recentAudit },
+          { data: authEmails },
+        ] = await Promise.all([
+          (supabase as any)
+            .from('brands')
+            .select('*, profiles(id, full_name, username, phone, role, is_active), brand_settings(logo_url, primary_color, secondary_color)')
+            .eq('id', brandId)
+            .maybeSingle(),
+          (supabase as any)
+            .from('shops')
+            .select('*')
+            .eq('brand_id', brandId)
+            .order('name', { ascending: true }),
+          (supabase as any)
+            .from('audit_log')
+            .select('created_at')
+            .eq('brand_id', brandId)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+          (async () => {
+            try {
+              return await (supabase as any).rpc('get_auth_user_emails');
+            } catch {
+              return { data: [] };
+            }
+          })(),
+        ]);
 
       if (brandErr) console.error('Brand detail load error:', brandErr);
       if (!dbBrand) return null;
@@ -147,7 +152,11 @@ export function BrandDetailClient() {
         managersCount: managers.length,
         lastActivity,
       };
-    },
+    } catch (err) {
+      console.error('Brand detail load error:', err);
+      return null;
+    }
+  },
     enabled: Boolean(brandId || !isLive),
   });
 

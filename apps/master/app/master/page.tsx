@@ -32,40 +32,45 @@ export default function MasterDashboardPage() {
         };
       }
 
-      const monthBounds = getMonthBounds(getCurrentMonthKolkata());
+      try {
+        const monthBounds = getMonthBounds(getCurrentMonthKolkata());
 
-      const [
-        { data: dbBrands, error: brandsErr },
-        { data: dbSummaries },
-        { count: activeUsersCount },
-        { data: latestBackup },
-        { data: authEmails },
-      ] = await Promise.all([
-        (supabase as any)
-          .from('brands')
-          .select('*, shops(id), profiles(id, full_name, username, phone, role, is_active), brand_settings(logo_url, primary_color, secondary_color)')
-          .order('created_at', { ascending: false }),
-        (supabase as any)
-          .from('daily_summary')
-          .select('shop_id, income')
-          .gte('summary_date', monthBounds.start)
-          .lte('summary_date', monthBounds.end),
-        (supabase as any)
-          .from('profiles')
-          .select('id', { count: 'exact', head: true })
-          .in('role', ['admin', 'manager'])
-          .eq('is_active', true),
-        (supabase as any)
-          .from('backup_log')
-          .select('created_at')
-          .eq('scope', 'all')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-        (supabase as any)
-          .rpc('get_auth_user_emails')
-          .catch(() => ({ data: [] })),
-      ]);
+        const [
+          { data: dbBrands, error: brandsErr },
+          { data: dbSummaries },
+          { count: activeUsersCount },
+          { data: latestBackup },
+          { data: authEmails },
+        ] = await Promise.all([
+          (supabase as any)
+            .from('brands')
+            .select('*, shops(id), profiles(id, full_name, username, phone, role, is_active), brand_settings(logo_url, primary_color, secondary_color)')
+            .order('created_at', { ascending: false }),
+          (supabase as any)
+            .from('daily_summary')
+            .select('shop_id, income')
+            .gte('summary_date', monthBounds.start)
+            .lte('summary_date', monthBounds.end),
+          (supabase as any)
+            .from('profiles')
+            .select('id', { count: 'exact', head: true })
+            .in('role', ['admin', 'manager'])
+            .eq('is_active', true),
+          (supabase as any)
+            .from('backup_log')
+            .select('created_at')
+            .eq('scope', 'all')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+          (async () => {
+            try {
+              return await (supabase as any).rpc('get_auth_user_emails');
+            } catch {
+              return { data: [] };
+            }
+          })(),
+        ]);
 
       const emailMap = new Map<string, string>();
       (authEmails || []).forEach((u: any) => {
@@ -160,8 +165,23 @@ export default function MasterDashboardPage() {
         },
         needsBackupReminder,
       };
-    },
-  });
+    } catch (err) {
+      console.error('Master dashboard load error:', err);
+      return {
+        brands: [],
+        metrics: {
+          totalBrands: 0,
+          activeBrands: 0,
+          suspendedBrands: 0,
+          totalShops: 0,
+          totalUsers: 0,
+          totalMonthlyVolume: 0,
+        },
+        needsBackupReminder: false,
+      };
+    }
+  },
+});
 
   const masterUser = {
     id: profile?.id,
