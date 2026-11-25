@@ -1,9 +1,10 @@
 -- ==============================================================================
--- CafeSync: Fix Auth Users NULL Tokens & Identities (Resolves 500 "Database error querying schema")
+-- CafeSync: Fix Auth Users NULL Tokens & Missing Identities
+-- Resolves 500 "Database error querying schema" and "Database error loading user"
 -- ==============================================================================
 
 -- ------------------------------------------------------------------------------
--- 1. FIX EXISTING AUTH USERS: Replace NULL tokens with empty strings
+-- 1. FIX EXISTING AUTH USERS: Replace all NULL columns with GoTrue-safe values
 -- ------------------------------------------------------------------------------
 UPDATE auth.users
 SET 
@@ -14,68 +15,86 @@ SET
     email_change_token_current = COALESCE(email_change_token_current, ''),
     phone_change = COALESCE(phone_change, ''),
     phone_change_token = COALESCE(phone_change_token, ''),
-    reauthentication_token = COALESCE(reauthentication_token, '')
+    reauthentication_token = COALESCE(reauthentication_token, ''),
+    phone = COALESCE(phone, ''),
+    confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+    email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
+    is_sso_user = COALESCE(is_sso_user, false),
+    is_anonymous = COALESCE(is_anonymous, false),
+    aud = COALESCE(aud, 'authenticated'),
+    role = COALESCE(role, 'authenticated'),
+    raw_app_meta_data = COALESCE(raw_app_meta_data, '{"provider":"email","providers":["email"]}'::jsonb)
 WHERE 
     confirmation_token IS NULL 
     OR recovery_token IS NULL 
     OR email_change IS NULL 
-    OR email_change_token_new IS NULL;
+    OR email_change_token_new IS NULL
+    OR email_change_token_current IS NULL
+    OR phone_change IS NULL
+    OR phone_change_token IS NULL
+    OR reauthentication_token IS NULL
+    OR phone IS NULL
+    OR confirmed_at IS NULL
+    OR email_change_confirm_status IS NULL
+    OR is_sso_user IS NULL
+    OR is_anonymous IS NULL
+    OR aud IS NULL
+    OR role IS NULL
+    OR raw_app_meta_data IS NULL;
 
 -- ------------------------------------------------------------------------------
--- 2. ENSURE ALL AUTH USERS HAVE MATCHING AUTH.IDENTITIES
+-- 2. ENSURE ALL AUTH USERS HAVE MATCHING AUTH.IDENTITIES (NO CONFLICT SYNTAX ERRORS)
 -- ------------------------------------------------------------------------------
 DO $$
+DECLARE
+    r RECORD;
 BEGIN
-    IF EXISTS (
-        SELECT 1 FROM information_schema.columns 
-        WHERE table_schema = 'auth' AND table_name = 'identities' AND column_name = 'provider_id'
-    ) THEN
-        EXECUTE '
+    FOR r IN 
+        SELECT u.id, u.email 
+        FROM auth.users u 
+        WHERE NOT EXISTS (
+            SELECT 1 FROM auth.identities i 
+            WHERE i.user_id = u.id AND i.provider = 'email'
+        )
+    LOOP
+        BEGIN
+            -- Try inserting with provider_id
             INSERT INTO auth.identities (
-                id, user_id, identity_data, provider, provider_id, last_sign_in_at, created_at, updated_at
-            )
-            SELECT 
-                u.id::text, 
-                u.id, 
-                jsonb_build_object(''sub'', u.id::text, ''email'', u.email), 
-                ''email'', 
-                u.id::text, 
-                now(), 
-                now(), 
+                id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+            ) VALUES (
+                r.id::text,
+                r.id::text,
+                r.id,
+                jsonb_build_object('sub', r.id::text, 'email', r.email),
+                'email',
+                now(),
+                now(),
                 now()
-            FROM auth.users u
-            WHERE NOT EXISTS (
-                SELECT 1 FROM auth.identities i 
-                WHERE i.user_id = u.id AND i.provider = ''email''
-            )
-            ON CONFLICT (id, provider) DO NOTHING;
-        ';
-    ELSE
-        EXECUTE '
-            INSERT INTO auth.identities (
-                id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
-            )
-            SELECT 
-                u.id::text, 
-                u.id, 
-                jsonb_build_object(''sub'', u.id::text, ''email'', u.email), 
-                ''email'', 
-                now(), 
-                now(), 
-                now()
-            FROM auth.users u
-            WHERE NOT EXISTS (
-                SELECT 1 FROM auth.identities i 
-                WHERE i.user_id = u.id AND i.provider = ''email''
-            )
-            ON CONFLICT (id, provider) DO NOTHING;
-        ';
-    END IF;
+            );
+        EXCEPTION WHEN OTHERS THEN
+            BEGIN
+                -- Fallback if schema does not use provider_id
+                INSERT INTO auth.identities (
+                    id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+                ) VALUES (
+                    r.id::text,
+                    r.id,
+                    jsonb_build_object('sub', r.id::text, 'email', r.email),
+                    'email',
+                    now(),
+                    now(),
+                    now()
+                );
+            EXCEPTION WHEN OTHERS THEN
+                RAISE NOTICE 'Could not insert identity for %: %', r.email, SQLERRM;
+            END;
+        END;
+    END LOOP;
 END;
 $$;
 
 -- ------------------------------------------------------------------------------
--- 3. UPDATE rpc_master_create_brand_admin
+-- 3. UPDATE rpc_master_create_brand_admin (Atomic & 100% GoTrue Compatible)
 -- ------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.rpc_master_create_brand_admin(
     p_brand_id uuid,
@@ -118,10 +137,11 @@ BEGIN
 
         INSERT INTO auth.users (
             instance_id, id, aud, role, email, encrypted_password,
-            email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+            email_confirmed_at, confirmed_at, raw_app_meta_data, raw_user_meta_data,
             created_at, updated_at,
             confirmation_token, recovery_token, email_change, email_change_token_new,
-            email_change_token_current, phone_change, phone_change_token, reauthentication_token
+            email_change_token_current, phone_change, phone_change_token, reauthentication_token,
+            phone, is_sso_user, is_anonymous, email_change_confirm_status
         ) VALUES (
             '00000000-0000-0000-0000-000000000000',
             v_user_id,
@@ -130,12 +150,14 @@ BEGIN
             lower(trim(p_email)),
             v_encrypted_pw,
             now(),
+            now(),
             jsonb_build_object('provider', 'email', 'providers', array['email']),
             jsonb_build_object('full_name', p_name),
             now(),
             now(),
             '', '', '', '',
-            '', '', '', ''
+            '', '', '', '',
+            COALESCE(p_phone, ''), false, false, 0
         );
     ELSE
         UPDATE auth.users
@@ -145,27 +167,54 @@ BEGIN
             recovery_token = COALESCE(recovery_token, ''),
             email_change = COALESCE(email_change, ''),
             email_change_token_new = COALESCE(email_change_token_new, ''),
+            email_change_token_current = COALESCE(email_change_token_current, ''),
+            phone_change = COALESCE(phone_change, ''),
+            phone_change_token = COALESCE(phone_change_token, ''),
+            reauthentication_token = COALESCE(reauthentication_token, ''),
+            phone = COALESCE(phone, p_phone, ''),
+            confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+            email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
+            is_sso_user = COALESCE(is_sso_user, false),
+            is_anonymous = COALESCE(is_anonymous, false),
+            aud = 'authenticated',
+            role = 'authenticated',
             updated_at = now()
         WHERE id = v_user_id;
     END IF;
 
     -- Ensure matching identity in auth.identities
-    BEGIN
-        INSERT INTO auth.identities (
-            id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
-        ) VALUES (
-            v_user_id::text,
-            v_user_id,
-            jsonb_build_object('sub', v_user_id::text, 'email', lower(trim(p_email))),
-            'email',
-            now(),
-            now(),
-            now()
-        )
-        ON CONFLICT (id, provider) DO NOTHING;
-    EXCEPTION WHEN OTHERS THEN
-        -- Non-blocking if schema differs
-    END;
+    IF NOT EXISTS (SELECT 1 FROM auth.identities WHERE user_id = v_user_id AND provider = 'email') THEN
+        BEGIN
+            INSERT INTO auth.identities (
+                id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+            ) VALUES (
+                v_user_id::text,
+                v_user_id::text,
+                v_user_id,
+                jsonb_build_object('sub', v_user_id::text, 'email', lower(trim(p_email))),
+                'email',
+                now(),
+                now(),
+                now()
+            );
+        EXCEPTION WHEN OTHERS THEN
+            BEGIN
+                INSERT INTO auth.identities (
+                    id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+                ) VALUES (
+                    v_user_id::text,
+                    v_user_id,
+                    jsonb_build_object('sub', v_user_id::text, 'email', lower(trim(p_email))),
+                    'email',
+                    now(),
+                    now(),
+                    now()
+                );
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+        END;
+    END IF;
 
     INSERT INTO public.profiles (
         id, role, brand_id, full_name, phone, is_active, must_change_password, updated_at
@@ -301,10 +350,11 @@ BEGIN
         v_new_user_id := gen_random_uuid();
         INSERT INTO auth.users (
             instance_id, id, aud, role, email, encrypted_password,
-            email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+            email_confirmed_at, confirmed_at, raw_app_meta_data, raw_user_meta_data,
             created_at, updated_at,
             confirmation_token, recovery_token, email_change, email_change_token_new,
-            email_change_token_current, phone_change, phone_change_token, reauthentication_token
+            email_change_token_current, phone_change, phone_change_token, reauthentication_token,
+            phone, is_sso_user, is_anonymous, email_change_confirm_status
         ) VALUES (
             '00000000-0000-0000-0000-000000000000',
             v_new_user_id,
@@ -313,12 +363,14 @@ BEGIN
             v_synthetic_email,
             v_encrypted_pw,
             now(),
+            now(),
             jsonb_build_object('provider', 'email', 'providers', array['email']),
             jsonb_build_object('full_name', trim(p_manager_name), 'username', v_clean_username),
             now(),
             now(),
             '', '', '', '',
-            '', '', '', ''
+            '', '', '', '',
+            COALESCE(p_manager_phone, ''), false, false, 0
         );
     ELSE
         UPDATE auth.users
@@ -328,25 +380,53 @@ BEGIN
             recovery_token = COALESCE(recovery_token, ''),
             email_change = COALESCE(email_change, ''),
             email_change_token_new = COALESCE(email_change_token_new, ''),
+            email_change_token_current = COALESCE(email_change_token_current, ''),
+            phone_change = COALESCE(phone_change, ''),
+            phone_change_token = COALESCE(phone_change_token, ''),
+            reauthentication_token = COALESCE(reauthentication_token, ''),
+            phone = COALESCE(phone, p_manager_phone, ''),
+            confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+            email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
+            is_sso_user = COALESCE(is_sso_user, false),
+            is_anonymous = COALESCE(is_anonymous, false),
+            aud = 'authenticated',
+            role = 'authenticated',
             updated_at = now()
         WHERE id = v_new_user_id;
     END IF;
 
-    BEGIN
-        INSERT INTO auth.identities (
-            id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
-        ) VALUES (
-            v_new_user_id::text,
-            v_new_user_id,
-            jsonb_build_object('sub', v_new_user_id::text, 'email', v_synthetic_email),
-            'email',
-            now(),
-            now(),
-            now()
-        )
-        ON CONFLICT (id, provider) DO NOTHING;
-    EXCEPTION WHEN OTHERS THEN
-    END;
+    IF NOT EXISTS (SELECT 1 FROM auth.identities WHERE user_id = v_new_user_id AND provider = 'email') THEN
+        BEGIN
+            INSERT INTO auth.identities (
+                id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+            ) VALUES (
+                v_new_user_id::text,
+                v_new_user_id::text,
+                v_new_user_id,
+                jsonb_build_object('sub', v_new_user_id::text, 'email', v_synthetic_email),
+                'email',
+                now(),
+                now(),
+                now()
+            );
+        EXCEPTION WHEN OTHERS THEN
+            BEGIN
+                INSERT INTO auth.identities (
+                    id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+                ) VALUES (
+                    v_new_user_id::text,
+                    v_new_user_id,
+                    jsonb_build_object('sub', v_new_user_id::text, 'email', v_synthetic_email),
+                    'email',
+                    now(),
+                    now(),
+                    now()
+                );
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+        END;
+    END IF;
 
     INSERT INTO public.profiles (
         id, role, brand_id, shop_id, full_name, username, phone, is_active, must_change_password, updated_at
@@ -465,10 +545,11 @@ BEGIN
         v_new_user_id := gen_random_uuid();
         INSERT INTO auth.users (
             instance_id, id, aud, role, email, encrypted_password,
-            email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+            email_confirmed_at, confirmed_at, raw_app_meta_data, raw_user_meta_data,
             created_at, updated_at,
             confirmation_token, recovery_token, email_change, email_change_token_new,
-            email_change_token_current, phone_change, phone_change_token, reauthentication_token
+            email_change_token_current, phone_change, phone_change_token, reauthentication_token,
+            phone, is_sso_user, is_anonymous, email_change_confirm_status
         ) VALUES (
             '00000000-0000-0000-0000-000000000000',
             v_new_user_id,
@@ -477,12 +558,14 @@ BEGIN
             v_resolved_email,
             v_encrypted_pw,
             now(),
+            now(),
             jsonb_build_object('provider', 'email', 'providers', array['email']),
             jsonb_build_object('full_name', trim(p_full_name), 'username', v_clean_username),
             now(),
             now(),
             '', '', '', '',
-            '', '', '', ''
+            '', '', '', '',
+            COALESCE(p_phone, ''), false, false, 0
         );
     ELSE
         UPDATE auth.users
@@ -492,25 +575,53 @@ BEGIN
             recovery_token = COALESCE(recovery_token, ''),
             email_change = COALESCE(email_change, ''),
             email_change_token_new = COALESCE(email_change_token_new, ''),
+            email_change_token_current = COALESCE(email_change_token_current, ''),
+            phone_change = COALESCE(phone_change, ''),
+            phone_change_token = COALESCE(phone_change_token, ''),
+            reauthentication_token = COALESCE(reauthentication_token, ''),
+            phone = COALESCE(phone, p_phone, ''),
+            confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+            email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
+            is_sso_user = COALESCE(is_sso_user, false),
+            is_anonymous = COALESCE(is_anonymous, false),
+            aud = 'authenticated',
+            role = 'authenticated',
             updated_at = now()
         WHERE id = v_new_user_id;
     END IF;
 
-    BEGIN
-        INSERT INTO auth.identities (
-            id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
-        ) VALUES (
-            v_new_user_id::text,
-            v_new_user_id,
-            jsonb_build_object('sub', v_new_user_id::text, 'email', v_resolved_email),
-            'email',
-            now(),
-            now(),
-            now()
-        )
-        ON CONFLICT (id, provider) DO NOTHING;
-    EXCEPTION WHEN OTHERS THEN
-    END;
+    IF NOT EXISTS (SELECT 1 FROM auth.identities WHERE user_id = v_new_user_id AND provider = 'email') THEN
+        BEGIN
+            INSERT INTO auth.identities (
+                id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+            ) VALUES (
+                v_new_user_id::text,
+                v_new_user_id::text,
+                v_new_user_id,
+                jsonb_build_object('sub', v_new_user_id::text, 'email', v_resolved_email),
+                'email',
+                now(),
+                now(),
+                now()
+            );
+        EXCEPTION WHEN OTHERS THEN
+            BEGIN
+                INSERT INTO auth.identities (
+                    id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+                ) VALUES (
+                    v_new_user_id::text,
+                    v_new_user_id,
+                    jsonb_build_object('sub', v_new_user_id::text, 'email', v_resolved_email),
+                    'email',
+                    now(),
+                    now(),
+                    now()
+                );
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+        END;
+    END IF;
 
     INSERT INTO public.profiles (
         id, role, brand_id, shop_id, full_name, username, phone, is_active, must_change_password, updated_at
@@ -613,27 +724,57 @@ BEGIN
         recovery_token = COALESCE(recovery_token, ''),
         email_change = COALESCE(email_change, ''),
         email_change_token_new = COALESCE(email_change_token_new, ''),
+        email_change_token_current = COALESCE(email_change_token_current, ''),
+        phone_change = COALESCE(phone_change, ''),
+        phone_change_token = COALESCE(phone_change_token, ''),
+        reauthentication_token = COALESCE(reauthentication_token, ''),
+        phone = COALESCE(phone, ''),
+        confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+        email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
+        is_sso_user = COALESCE(is_sso_user, false),
+        is_anonymous = COALESCE(is_anonymous, false),
+        aud = 'authenticated',
+        role = 'authenticated',
         updated_at = now()
     WHERE id = p_user_id;
 
     -- Ensure matching identity exists
-    BEGIN
-        INSERT INTO auth.identities (
-            id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
-        )
-        SELECT 
-            u.id::text,
-            u.id,
-            jsonb_build_object('sub', u.id::text, 'email', u.email),
-            'email',
-            now(),
-            now(),
-            now()
-        FROM auth.users u
-        WHERE u.id = p_user_id
-        ON CONFLICT (id, provider) DO NOTHING;
-    EXCEPTION WHEN OTHERS THEN
-    END;
+    IF NOT EXISTS (SELECT 1 FROM auth.identities WHERE user_id = p_user_id AND provider = 'email') THEN
+        BEGIN
+            INSERT INTO auth.identities (
+                id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+            )
+            SELECT 
+                u.id::text,
+                u.id::text,
+                u.id,
+                jsonb_build_object('sub', u.id::text, 'email', u.email),
+                'email',
+                now(),
+                now(),
+                now()
+            FROM auth.users u
+            WHERE u.id = p_user_id;
+        EXCEPTION WHEN OTHERS THEN
+            BEGIN
+                INSERT INTO auth.identities (
+                    id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+                )
+                SELECT 
+                    u.id::text,
+                    u.id,
+                    jsonb_build_object('sub', u.id::text, 'email', u.email),
+                    'email',
+                    now(),
+                    now(),
+                    now()
+                FROM auth.users u
+                WHERE u.id = p_user_id;
+            EXCEPTION WHEN OTHERS THEN
+                NULL;
+            END;
+        END;
+    END IF;
 
     UPDATE public.profiles
     SET must_change_password = true,
