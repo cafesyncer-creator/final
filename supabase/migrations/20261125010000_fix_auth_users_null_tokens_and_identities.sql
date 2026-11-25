@@ -17,7 +17,7 @@ SET
     phone_change_token = COALESCE(phone_change_token, ''),
     reauthentication_token = COALESCE(reauthentication_token, ''),
     phone = COALESCE(phone, ''),
-    confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+    email_confirmed_at = COALESCE(email_confirmed_at, now()),
     email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
     is_sso_user = COALESCE(is_sso_user, false),
     is_anonymous = COALESCE(is_anonymous, false),
@@ -34,7 +34,7 @@ WHERE
     OR phone_change_token IS NULL
     OR reauthentication_token IS NULL
     OR phone IS NULL
-    OR confirmed_at IS NULL
+    OR email_confirmed_at IS NULL
     OR email_change_confirm_status IS NULL
     OR is_sso_user IS NULL
     OR is_anonymous IS NULL
@@ -137,7 +137,7 @@ BEGIN
 
         INSERT INTO auth.users (
             instance_id, id, aud, role, email, encrypted_password,
-            email_confirmed_at, confirmed_at, raw_app_meta_data, raw_user_meta_data,
+            email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
             created_at, updated_at,
             confirmation_token, recovery_token, email_change, email_change_token_new,
             email_change_token_current, phone_change, phone_change_token, reauthentication_token,
@@ -149,7 +149,6 @@ BEGIN
             'authenticated',
             lower(trim(p_email)),
             v_encrypted_pw,
-            now(),
             now(),
             jsonb_build_object('provider', 'email', 'providers', array['email']),
             jsonb_build_object('full_name', p_name),
@@ -172,7 +171,7 @@ BEGIN
             phone_change_token = COALESCE(phone_change_token, ''),
             reauthentication_token = COALESCE(reauthentication_token, ''),
             phone = COALESCE(phone, p_phone, ''),
-            confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+            email_confirmed_at = COALESCE(email_confirmed_at, now()),
             email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
             is_sso_user = COALESCE(is_sso_user, false),
             is_anonymous = COALESCE(is_anonymous, false),
@@ -350,7 +349,7 @@ BEGIN
         v_new_user_id := gen_random_uuid();
         INSERT INTO auth.users (
             instance_id, id, aud, role, email, encrypted_password,
-            email_confirmed_at, confirmed_at, raw_app_meta_data, raw_user_meta_data,
+            email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
             created_at, updated_at,
             confirmation_token, recovery_token, email_change, email_change_token_new,
             email_change_token_current, phone_change, phone_change_token, reauthentication_token,
@@ -362,7 +361,6 @@ BEGIN
             'authenticated',
             v_synthetic_email,
             v_encrypted_pw,
-            now(),
             now(),
             jsonb_build_object('provider', 'email', 'providers', array['email']),
             jsonb_build_object('full_name', trim(p_manager_name), 'username', v_clean_username),
@@ -385,7 +383,7 @@ BEGIN
             phone_change_token = COALESCE(phone_change_token, ''),
             reauthentication_token = COALESCE(reauthentication_token, ''),
             phone = COALESCE(phone, p_manager_phone, ''),
-            confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+            email_confirmed_at = COALESCE(email_confirmed_at, now()),
             email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
             is_sso_user = COALESCE(is_sso_user, false),
             is_anonymous = COALESCE(is_anonymous, false),
@@ -545,7 +543,7 @@ BEGIN
         v_new_user_id := gen_random_uuid();
         INSERT INTO auth.users (
             instance_id, id, aud, role, email, encrypted_password,
-            email_confirmed_at, confirmed_at, raw_app_meta_data, raw_user_meta_data,
+            email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
             created_at, updated_at,
             confirmation_token, recovery_token, email_change, email_change_token_new,
             email_change_token_current, phone_change, phone_change_token, reauthentication_token,
@@ -557,7 +555,6 @@ BEGIN
             'authenticated',
             v_resolved_email,
             v_encrypted_pw,
-            now(),
             now(),
             jsonb_build_object('provider', 'email', 'providers', array['email']),
             jsonb_build_object('full_name', trim(p_full_name), 'username', v_clean_username),
@@ -580,7 +577,7 @@ BEGIN
             phone_change_token = COALESCE(phone_change_token, ''),
             reauthentication_token = COALESCE(reauthentication_token, ''),
             phone = COALESCE(phone, p_phone, ''),
-            confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+            email_confirmed_at = COALESCE(email_confirmed_at, now()),
             email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
             is_sso_user = COALESCE(is_sso_user, false),
             is_anonymous = COALESCE(is_anonymous, false),
@@ -729,7 +726,7 @@ BEGIN
         phone_change_token = COALESCE(phone_change_token, ''),
         reauthentication_token = COALESCE(reauthentication_token, ''),
         phone = COALESCE(phone, ''),
-        confirmed_at = COALESCE(confirmed_at, email_confirmed_at, now()),
+        email_confirmed_at = COALESCE(email_confirmed_at, now()),
         email_change_confirm_status = COALESCE(email_change_confirm_status, 0),
         is_sso_user = COALESCE(is_sso_user, false),
         is_anonymous = COALESCE(is_anonymous, false),
