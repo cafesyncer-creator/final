@@ -43,11 +43,6 @@ function LoginFormInner({ isLiveSupabase }: LoginFormClientProps) {
         return;
       }
 
-      if (res.mustChangePassword) {
-        router.push('/change-password');
-        return;
-      }
-
       const destination = redirectParam || '/shop/';
       window.location.href = destination;
     } catch (err: any) {
